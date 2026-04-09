@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Seekhein — Login</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root, [data-theme="dark"] {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --surface-2: #1a1a2e;
+            --border: #1e1e2e;
+            --accent: #00ffe0;
+            --accent-2: #7c3aed;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --header-bg: #0a0a0f;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --primary: #7c3aed;
+            --primary-light: #8b5cf6;
+            --secondary: #06b6d4;
+        }
+        [data-theme="light"] {
+            --bg: #f0f4ff;
+            --surface: #ffffff;
+            --surface-2: #e8edf8;
+            --border: #dde3f0;
+            --accent: #6d28d9;
+            --accent-2: #0891b2;
+            --text: #0f172a;
+            --text-muted: #475569;
+            --header-bg: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --primary: #6d28d9;
+            --primary-light: #7c3aed;
+            --secondary: #0891b2;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ── Theme toggle (fixed top-right) ── */
+        .theme-toggle-btn {
+            position: fixed; top: 16px; right: 16px;
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text-muted); border-radius: 8px;
+            width: 38px; height: 38px; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; z-index: 100;
+        }
+        .theme-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── Hero title ── */
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .hero-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+        .hero-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2rem; font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent), 0 0 60px rgba(0,255,224,0.2);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        [data-theme="light"] .hero-title {
+            text-shadow: 0 0 20px rgba(109,40,217,0.3);
+        }
+        .hero-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Auth card ── */
+        .auth-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            transition: border-color 0.2s;
+        }
+        .auth-card:hover { border-color: var(--accent); }
+
+        /* ── Terminal titlebar ── */
+        .terminal-titlebar {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .t-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+        .t-dot.red { background: #ff5f57; }
+        .t-dot.yellow { background: #febc2e; }
+        .t-dot.green { background: #28c840; }
+        .terminal-filename {
+            margin-left: 8px; font-size: 0.75rem;
+            color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+        }
+
+        .card-body { padding: 28px; }
+
+        /* ── Mode toggle tabs ── */
+        .mode-toggle {
+            display: flex;
+            background: var(--surface-2);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 24px;
+            gap: 4px;
+            border: 1px solid var(--border);
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: var(--surface);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 10px rgba(0,255,224,0.1);
+        }
+        [data-theme="light"] .mode-btn.active {
+            box-shadow: 0 0 10px rgba(109,40,217,0.1);
+        }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+
+        /* ── Form labels ── */
+        .form-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+            margin-top: 18px;
+        }
+        .form-label:first-of-type { margin-top: 0; }
+
+        /* ── Inputs ── */
+        input[type="text"] {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--surface-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.08);
+        }
+        [data-theme="light"] input[type="text"]:focus {
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
+        }
+        input[type="text"]::placeholder { color: var(--text-muted); }
+
+        /* ── CTA Button ── */
+        .btn-cta {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent));
+            color: var(--bg);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-cta::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .btn-cta:hover::before { opacity: 1; }
+        .btn-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,255,224,0.25); }
+        [data-theme="light"] .btn-cta { color: white; }
+        [data-theme="light"] .btn-cta:hover { box-shadow: 0 4px 20px rgba(109,40,217,0.3); }
+        .btn-cta:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* ── Loader ── */
+        .loader {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Error message ── */
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.82rem;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: rgba(239,68,68,0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--danger);
+            display: none;
+        }
+        .error-msg.show { display: block; }
+
+        /* ── Code reveal box ── */
+        .code-box {
+            display: none;
+            margin-top: 20px;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            animation: fadeInUp 0.4s ease;
+        }
+        .code-box.show { display: block; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .code-box .welcome {
+            font-size: 0.88rem; color: var(--success); margin-bottom: 8px; font-weight: 600;
+        }
+        .code-box .warning {
+            font-size: 0.78rem; color: var(--warning);
+            background: rgba(245,158,11,0.1); border-radius: 6px;
+            padding: 8px 12px; margin-bottom: 14px;
+            border-left: 3px solid var(--warning);
+            text-align: left;
+        }
+
+        .code-display {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--accent);
+            background: var(--surface-2);
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 10px 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 20px var(--accent);
+        }
+        [data-theme="light"] .code-display {
+            text-shadow: none;
+        }
+
+        .copy-btn {
+            background: var(--surface-2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            padding: 7px 18px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: rgba(0,255,224,0.08);
+            box-shadow: 0 0 10px rgba(0,255,224,0.2);
+        }
+        [data-theme="light"] .copy-btn:hover {
+            background: rgba(109,40,217,0.08);
+            box-shadow: 0 0 10px rgba(109,40,217,0.2);
+        }
+
+        .go-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 14px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+        .go-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.35); }
+
+        .divider {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: 16px 0 0;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Footer note ── */
+        .footer-note {
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Fixed theme toggle -->
+<button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark/light mode">🌙</button>
+
+<!-- Hero title -->
+<div class="hero">
+    <span class="hero-icon">📚</span>
+    <h1 class="hero-title">English Seekhein</h1>
+    <p class="hero-subtitle">// AI se English seekhein — Learn English with AI</p>
+</div>
+
+<!-- Auth card -->
+<div class="auth-card">
+    <div class="terminal-titlebar">
+        <span class="t-dot red"></span>
+        <span class="t-dot yellow"></span>
+        <span class="t-dot green"></span>
+        <span class="terminal-filename">auth.js</span>
+    </div>
+    <div class="card-body">
+        <div class="mode-toggle">
+            <button class="mode-btn active" onclick="switchMode('new')">✨ New User</button>
+            <button class="mode-btn" onclick="switchMode('returning')">🔑 I have an account</button>
+        </div>
+
+        <!-- NEW USER -->
+        <div id="form-new" class="form-section active">
+            <label class="form-label">USERNAME ─ APNA NAAM</label>
+            <input type="text" id="reg-username" placeholder="e.g. Janna123" maxlength="30"
+                onkeydown="if(event.key==='Enter') doRegister()">
+
+            <button class="btn-cta" onclick="doRegister()" id="reg-btn">
+                ✨ Create My Account
+            </button>
+            <div class="error-msg" id="reg-error"></div>
+
+            <div class="code-box" id="code-box">
+                <div class="welcome" id="code-welcome"></div>
+                <div class="warning">⚠️ Save this code — you will need it to login next time!</div>
+                <div class="code-display" id="code-display">----</div>
+                <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+                <button class="go-btn" onclick="goToApp()">🚀 Start Learning!</button>
+            </div>
+        </div>
+
+        <!-- RETURNING USER -->
+        <div id="form-returning" class="form-section">
+            <label class="form-label">USERNAME</label>
+            <input type="text" id="login-username" placeholder="Your username" maxlength="30"
+                onkeydown="if(event.key==='Enter') document.getElementById('login-code').focus()">
+
+            <label class="form-label" style="margin-top:14px;">UNIQUE CODE ─ APNA CODE LIKHEIN</label>
+            <input type="text" id="login-code" placeholder="e.g. ABcd-EFgh-1234"
+                onkeydown="if(event.key==='Enter') doLogin()">
+
+            <button class="btn-cta" onclick="doLogin()" id="login-btn">
+                🔑 Login
+            </button>
+            <div class="error-msg" id="login-error"></div>
+            <div class="divider">Naya yahan? Switch to "New User" tab ↑</div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-note">// English Seekhein v2 — Powered by AI</div>
+
+<script>
+(function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('theme-btn').textContent = saved === 'dark' ? '🌙' : '☀️';
+    });
+})();
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    document.getElementById('theme-btn').textContent = next === 'dark' ? '🌙' : '☀️';
+}
+
+function switchMode(mode) {
+    document.querySelectorAll('.mode-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i === 0 && mode === 'new') || (i === 1 && mode === 'returning'));
+    });
+    document.getElementById('form-new').classList.toggle('active', mode === 'new');
+    document.getElementById('form-returning').classList.toggle('active', mode === 'returning');
+}
+
+async function doRegister() {
+    const username = document.getElementById('reg-username').value.trim();
+    const errEl = document.getElementById('reg-error');
+    const btn = document.getElementById('reg-btn');
+
+    errEl.classList.remove('show');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> Creating...';
+
+    try {
+        const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        document.getElementById('code-welcome').textContent = `Marhaba ${data.username}! Yeh aapka unique code hai:`;
+        document.getElementById('code-display').textContent = data.code;
+        document.getElementById('code-box').classList.add('show');
+        btn.style.display = 'none';
+        document.getElementById('reg-username').disabled = true;
+    } catch (e) {
+        errEl.textContent = '⚠️ ' + (e.message || 'Something went wrong.');
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.innerHTML = '✨ Create My Account';
+    }
+}
+
+function copyCode() {
+    const code = document.getElementById('code-display').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy Code', 2000);
+    });
+}
+
+function goToApp() {
+    window.location.href = '/';
+}
+
+async function doLogin() {
+    const username = document.getElementById('login-username').value.trim();
+    const code = document.getElementById('login-code').value.trim();
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
+
+    errEl.classList.remove('show');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> Logging in...';
+
+    try {
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, code })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        window.location.href = '/';
+    } catch (e) {
+        errEl.textContent = '⚠️ ' + (e.message || 'Login failed. Try again.');
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.innerHTML = '🔑 Login';
+    }
+}
+</script>
+</body>
+</html>

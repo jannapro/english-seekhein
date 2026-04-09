@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Seekhein 📚</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root, [data-theme="dark"] {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --surface-2: #1a1a2e;
+            --border: #1e1e2e;
+            --accent: #00ffe0;
+            --accent-2: #7c3aed;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --sidebar-bg: #0d0d14;
+            --header-bg: #0a0a0f;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --primary: #7c3aed;
+            --primary-light: #8b5cf6;
+            --secondary: #06b6d4;
+            --card: var(--surface);
+        }
+        [data-theme="light"] {
+            --bg: #f0f4ff;
+            --surface: #ffffff;
+            --surface-2: #e8edf8;
+            --border: #dde3f0;
+            --accent: #6d28d9;
+            --accent-2: #0891b2;
+            --text: #0f172a;
+            --text-muted: #475569;
+            --sidebar-bg: #e8edf8;
+            --header-bg: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --primary: #6d28d9;
+            --primary-light: #7c3aed;
+            --secondary: #0891b2;
+            --card: #ffffff;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ── Header ── */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px; z-index: 100;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+            backdrop-filter: blur(10px);
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .header-right { display: flex; align-items: center; gap: 10px; position: relative; }
+
+        .sidebar-toggle {
+            background: none; border: 1px solid var(--border); color: var(--text);
+            width: 36px; height: 36px; border-radius: 6px; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .sidebar-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-text {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent);
+            white-space: nowrap;
+        }
+
+        .hdr-btn {
+            background: none; border: 1px solid var(--border); color: var(--text-muted);
+            width: 36px; height: 36px; border-radius: 6px; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .hdr-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--accent); color: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85rem;
+        }
+        .username-label {
+            font-size: 0.82rem; color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: fixed; top: 64px; left: 0;
+            width: 220px; height: calc(100vh - 64px);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            z-index: 90; overflow: hidden;
+            transition: width 0.25s ease;
+            display: flex; flex-direction: column;
+        }
+        .sidebar.collapsed { width: 64px; }
+        .sidebar-nav {
+            display: flex; flex-direction: column;
+            height: 100%; overflow-y: auto; overflow-x: hidden;
+            padding: 12px 0;
+        }
+        .nav-top { flex: 1; }
+        .nav-bottom { padding-bottom: 8px; }
+
+        .nav-section-label {
+            font-size: 0.65rem; letter-spacing: 0.15em;
+            color: var(--text-muted); padding: 12px 20px 4px;
+            text-transform: uppercase; white-space: nowrap;
+            overflow: hidden; transition: opacity 0.2s;
+        }
+        .sidebar.collapsed .nav-section-label { opacity: 0; height: 0; padding: 0; }
+
+        .nav-item {
+            width: 100%; display: flex; align-items: center; gap: 12px;
+            padding: 10px 20px; background: none; border: none; border-left: 3px solid transparent;
+            color: var(--text-muted); cursor: pointer; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem; text-align: left; transition: all 0.15s;
+            white-space: nowrap; position: relative;
+        }
+        .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+        .nav-item.active {
+            color: var(--accent); border-left-color: var(--accent);
+            background: rgba(0,255,224,0.05);
+        }
+        [data-theme="light"] .nav-item.active { background: rgba(109,40,217,0.05); }
+
+        .nav-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+        .nav-label { overflow: hidden; transition: opacity 0.2s; }
+        .sidebar.collapsed .nav-label { opacity: 0; width: 0; }
+        .sidebar.collapsed .nav-item { padding: 12px; justify-content: center; }
+
+        /* Tooltip on collapsed */
+        .sidebar.collapsed .nav-item::after {
+            content: attr(data-tooltip);
+            position: absolute; left: calc(100% + 10px); top: 50%;
+            transform: translateY(-50%);
+            background: var(--surface-2); color: var(--text);
+            padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;
+            white-space: nowrap; z-index: 200; border: 1px solid var(--border);
+            opacity: 0; pointer-events: none; transition: opacity 0.15s;
+        }
+        .sidebar.collapsed .nav-item:hover::after { opacity: 1; }
+
+        /* ── Main content ── */
+        .main-content {
+            margin-left: 220px;
+            padding: 96px 32px 32px;
+            min-height: 100vh;
+            transition: margin-left 0.25s ease;
+        }
+        body.sidebar-collapsed .main-content { margin-left: 64px; }
+
+        .page-header { margin-bottom: 28px; }
+        .page-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.6rem; font-weight: 700;
+            color: var(--text); margin-bottom: 4px;
+        }
+        .breadcrumb {
+            font-size: 0.78rem; color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        .card:hover { border-color: var(--accent); }
+        .card h2 {
+            font-size: 1rem; font-weight: 600; margin-bottom: 16px;
+            color: var(--text); display: flex; align-items: center; gap: 8px;
+        }
+
+        /* ── Terminal card ── */
+        .terminal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        .terminal-card:hover { border-color: var(--accent); }
+        .terminal-titlebar {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .t-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+        .t-dot.red { background: #ff5f57; }
+        .t-dot.yellow { background: #febc2e; }
+        .t-dot.green { background: #28c840; }
+        .terminal-filename {
+            margin-left: 8px; font-size: 0.75rem;
+            color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+        }
+        .terminal-body { padding: 24px; }
+        .card-title {
+            font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: var(--text);
+        }
+        .card-title-sub { font-size: 0.8rem; color: var(--text-muted); font-weight: 400; }
+        .card-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+        /* ── Buttons ── */
+        .btn-code {
+            font-family: 'JetBrains Mono', monospace;
+            background: transparent; border: 1px solid var(--accent);
+            color: var(--accent); padding: 10px 20px; border-radius: 6px;
+            cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-code::before { content: '< '; opacity: 0.5; }
+        .btn-code::after { content: ' />'; opacity: 0.5; }
+        .btn-code:hover {
+            background: rgba(0, 255, 224, 0.07);
+            box-shadow: 0 0 16px rgba(0, 255, 224, 0.2);
+            transform: scale(1.02);
+        }
+        [data-theme="light"] .btn-code:hover {
+            background: rgba(109, 40, 217, 0.07);
+            box-shadow: 0 0 16px rgba(109, 40, 217, 0.2);
+        }
+        .btn-code:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .btn {
+            padding: 10px 18px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: var(--bg); }
+        .btn-primary:hover { opacity: 0.85; transform: scale(1.02); }
+        [data-theme="light"] .btn-primary { color: white; }
+        .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-success { background: var(--success); color: white; }
+
+        /* ── Inputs ── */
+        input[type="text"], select, textarea {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface); color: var(--text);
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 10px 14px; font-size: 0.88rem;
+            transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+            width: 100%;
+        }
+        input[type="text"]:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.08);
+        }
+        [data-theme="light"] input[type="text"]:focus,
+        [data-theme="light"] select:focus,
+        [data-theme="light"] textarea:focus {
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
+        }
+
+        /* ── Input row ── */
+        .input-row { display: flex; gap: 10px; }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--accent); margin: 16px 0 8px;
+            opacity: 0.8;
+        }
+
+        /* ── Error ── */
+        .error-msg { color: var(--danger); font-size: 0.82rem; margin-top: 8px; }
+
+        /* ── Loader ── */
+        .loader {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3); border-top-color: currentColor;
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Word display ── */
+        .word-display { display: none; animation: fadeInUp 0.3s ease; }
+        .word-display.show { display: block; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .word-hero {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent));
+            color: white; border-radius: 12px; padding: 24px;
+            margin-bottom: 16px; text-align: center;
+        }
+        .big-word { font-size: 2.2rem; font-weight: 700; font-family: 'Cinzel Decorative', serif; }
+        .pronunciation { font-size: 1rem; opacity: 0.8; margin: 4px 0; font-style: italic; }
+        .word-type {
+            display: inline-block; background: rgba(255,255,255,0.2);
+            padding: 3px 12px; border-radius: 20px; font-size: 0.78rem; margin-top: 6px;
+        }
+        .meaning-box { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .meaning-item { background: var(--surface-2); border-radius: 8px; padding: 14px; }
+        .meaning-item label {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--text-muted); display: block; margin-bottom: 6px;
+        }
+        .meaning-item p { font-size: 0.9rem; line-height: 1.5; }
+        .examples-list { list-style: none; }
+        .examples-list li {
+            padding: 10px 14px; border-left: 3px solid var(--accent);
+            background: var(--surface-2); border-radius: 0 8px 8px 0;
+            margin-bottom: 8px; font-size: 0.88rem; line-height: 1.5;
+        }
+        .tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+        .tag { padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; }
+        .tag-success { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .tag-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+        /* ── Grammar ── */
+        .grammar-section { display: none; }
+        .grammar-section.show { display: block; animation: fadeInUp 0.3s ease; }
+        .grammar-hero {
+            background: linear-gradient(135deg, var(--accent-2), var(--secondary));
+            color: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;
+        }
+        .grammar-hero h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; font-family: 'Cinzel Decorative', serif; }
+        .structure-badge {
+            display: inline-block; background: rgba(255,255,255,0.2);
+            padding: 4px 14px; border-radius: 20px; font-size: 0.82rem;
+            font-family: 'JetBrains Mono', monospace; margin-top: 8px;
+        }
+        .rules-list { list-style: none; }
+        .rules-list li {
+            padding: 10px 14px; border-left: 3px solid var(--accent-2);
+            background: var(--surface-2); border-radius: 0 8px 8px 0;
+            margin-bottom: 8px; font-size: 0.88rem;
+        }
+        .example-grid { display: grid; gap: 10px; }
+        .example-card { background: var(--surface-2); border-radius: 8px; padding: 14px; border: 1px solid var(--border); }
+        .example-card .sentence { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
+        .example-card .urdu { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 4px; }
+        .example-card .note { font-size: 0.78rem; color: var(--accent-2); font-style: italic; }
+        .mistake-card { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+        .mistake-wrong { color: var(--danger); font-size: 0.88rem; margin-bottom: 4px; }
+        .mistake-wrong::before { content: "✗ "; }
+        .mistake-correct { color: var(--success); font-size: 0.88rem; margin-bottom: 6px; }
+        .mistake-correct::before { content: "✓ "; }
+        .mistake-tip { font-size: 0.78rem; color: var(--warning); font-style: italic; }
+        .mistake-tip::before { content: "💡 "; }
+
+        /* ── Quiz ── */
+        .quiz-section { display: none; }
+        .quiz-section.show { display: block; animation: fadeInUp 0.3s ease; }
+        .progress-bar { width: 100%; height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); border-radius: 2px; transition: width 0.4s ease; }
+        .question-card { background: var(--surface-2); border-radius: 10px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .question-text { font-size: 1rem; font-weight: 500; margin-bottom: 16px; line-height: 1.5; }
+        .options-grid { display: grid; gap: 8px; }
+        .option-btn {
+            text-align: left; padding: 12px 16px; border: 1px solid var(--border);
+            border-radius: 8px; cursor: pointer; background: var(--surface);
+            color: var(--text); font-size: 0.88rem; font-family: 'JetBrains Mono', monospace;
+            transition: all 0.15s; display: flex; align-items: center; gap: 10px;
+        }
+        .option-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,255,224,0.05); }
+        [data-theme="light"] .option-btn:hover:not(:disabled) { background: rgba(109,40,217,0.05); }
+        .option-btn .letter {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--surface-2); display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.82rem; flex-shrink: 0;
+        }
+        .option-btn.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .option-btn.correct .letter { background: var(--success); color: white; }
+        .option-btn.wrong { border-color: var(--danger); background: rgba(239,68,68,0.1); }
+        .option-btn.wrong .letter { background: var(--danger); color: white; }
+        .explanation-box {
+            margin-top: 12px; padding: 12px 16px; background: rgba(6,182,212,0.08);
+            border-radius: 6px; border-left: 3px solid var(--secondary);
+            font-size: 0.85rem; line-height: 1.5; display: none;
+        }
+        .explanation-box.show { display: block; animation: fadeInUp 0.2s ease; }
+        .quiz-score { text-align: center; padding: 32px 20px; display: none; }
+        .quiz-score.show { display: block; animation: fadeInUp 0.4s ease; }
+        .score-circle {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent));
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin: 0 auto 20px; color: white;
+        }
+        .score-circle .score-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+        .score-circle .score-den { font-size: 0.78rem; opacity: 0.8; }
+        .score-msg { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+        .score-sub { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px; }
+        .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 0.82rem; color: var(--text-muted); }
+        .diff-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .diff-btn {
+            flex: 1; padding: 8px; border: 1px solid var(--border);
+            border-radius: 6px; background: var(--surface-2); cursor: pointer;
+            font-size: 0.78rem; font-weight: 500; color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace; transition: all 0.15s; text-align: center;
+        }
+        .diff-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,255,224,0.05); }
+        [data-theme="light"] .diff-btn.active { background: rgba(109,40,217,0.05); }
+
+        /* ── Chat ── */
+        .chat-container {
+            display: flex; flex-direction: column; height: 480px;
+            background: var(--surface-2); border-radius: 12px;
+            overflow: hidden; border: 1px solid var(--border);
+        }
+        .chat-messages {
+            flex: 1; overflow-y: auto; padding: 16px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+        .msg { max-width: 75%; display: flex; flex-direction: column; gap: 2px; animation: fadeInUp 0.2s ease; }
+        .msg.user { align-self: flex-end; align-items: flex-end; }
+        .msg.ai { align-self: flex-start; align-items: flex-start; }
+        .bubble { padding: 10px 14px; border-radius: 14px; font-size: 0.88rem; line-height: 1.55; word-break: break-word; }
+        .msg.user .bubble { background: var(--accent); color: var(--bg); border-bottom-right-radius: 4px; }
+        [data-theme="light"] .msg.user .bubble { color: white; }
+        .msg.ai .bubble { background: var(--surface); color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+        .bubble.typing { color: var(--text-muted); font-style: italic; }
+        .chat-input-row { display: flex; gap: 8px; padding: 12px; background: var(--surface); border-top: 1px solid var(--border); }
+        #chat-input { border-radius: 8px; resize: none; max-height: 100px; }
+        #send-btn { padding: 10px 16px; flex-shrink: 0; }
+        .chat-starters { padding: 0 16px 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .starter-btn {
+            padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border);
+            background: var(--surface); font-size: 0.78rem; cursor: pointer;
+            color: var(--text-muted); font-family: 'JetBrains Mono', monospace; transition: all 0.15s;
+        }
+        .starter-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── Voice / mic ── */
+        .mic-btn {
+            width: 90px; height: 90px; border-radius: 50%; border: none;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent));
+            font-size: 2.2rem; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+        }
+        .mic-btn:hover { transform: scale(1.06); }
+        .mic-btn.recording {
+            background: linear-gradient(135deg, var(--danger), #f97316);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        .tense-badge {
+            display: inline-block; padding: 6px 16px; border-radius: 20px;
+            background: rgba(6,182,212,0.1); border-left: 3px solid var(--secondary); font-size: 0.9rem;
+        }
+
+        /* ── Profile dropdown ── */
+        .profile-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--surface); border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid var(--border);
+            min-width: 230px; z-index: 200; overflow: hidden;
+        }
+        .profile-dropdown.show { display: block; animation: fadeInUp 0.15s ease; }
+        .dropdown-code-section { padding: 14px 16px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+        .dropdown-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 4px; }
+        .dropdown-code-val { font-size: 0.85rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--accent); letter-spacing: 1px; display: block; margin-bottom: 4px; }
+        .copy-code-btn { font-size: 0.72rem; color: var(--accent); background: none; border: none; cursor: pointer; font-weight: 600; }
+        .dropdown-item { width: 100%; text-align: left; padding: 11px 16px; background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text); font-family: 'JetBrains Mono', monospace; transition: background 0.15s; display: block; }
+        .dropdown-item:hover { background: var(--surface-2); }
+        .dropdown-item.danger { color: var(--danger); }
+        .dropdown-item.danger:hover { background: rgba(239,68,68,0.1); }
+
+        /* ── Modals ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 400; align-items: center; justify-content: center; padding: 16px; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); animation: fadeInUp 0.2s ease; }
+        .modal-box h3 { font-size: 1rem; margin-bottom: 6px; font-family: 'Cinzel Decorative', serif; color: var(--text); }
+        .modal-box p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+        .modal-input { margin-bottom: 6px; }
+        .modal-err { font-size: 0.78rem; color: var(--danger); min-height: 18px; margin-bottom: 10px; }
+        .modal-btns { display: flex; gap: 8px; margin-top: 4px; }
+        .modal-btns button { flex: 1; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; font-family: 'JetBrains Mono', monospace; }
+        .mbtn-cancel { background: var(--surface-2); color: var(--text); border: 1px solid var(--border) !important; }
+        .mbtn-cancel:hover { border-color: var(--accent) !important; color: var(--accent); }
+        .mbtn-confirm { background: var(--accent); color: var(--bg); }
+        [data-theme="light"] .mbtn-confirm { color: white; }
+        .mbtn-confirm:hover { opacity: 0.85; }
+        .mbtn-danger { background: var(--danger); color: white; }
+        .mbtn-danger:hover { background: #dc2626; }
+
+        /* ── Mobile bottom nav ── */
+        .mobile-nav { display: none; }
+
+        /* ── Animations ── */
+        .tab-content.active > * { animation: fadeInUp 0.35s ease backwards; }
+        .tab-content.active > *:nth-child(1) { animation-delay: 0ms; }
+        .tab-content.active > *:nth-child(2) { animation-delay: 80ms; }
+        .tab-content.active > *:nth-child(3) { animation-delay: 160ms; }
+        .tab-content.active > *:nth-child(4) { animation-delay: 240ms; }
+        .tab-content.active > *:nth-child(5) { animation-delay: 320ms; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ── Voice history card visibility ── */
+        #voice-history-card.card { display: none; }
+        #voice-transcript-card.card { display: none; }
+        #voice-analysis-card.card { display: none; }
+        #voice-teacher-card.card { display: none; }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 80px 16px 90px; }
+            .mobile-nav {
+                display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+                background: var(--sidebar-bg); border-top: 1px solid var(--border);
+                padding: 8px 4px; justify-content: space-around;
+            }
+            .mobile-nav-item {
+                background: none; border: none; font-size: 1.3rem; padding: 8px 12px;
+                cursor: pointer; border-radius: 8px; transition: background 0.15s; color: var(--text-muted);
+                display: flex; flex-direction: column; align-items: center;
+            }
+            .mobile-nav-item.active { color: var(--accent); background: rgba(0,255,224,0.08); }
+            [data-theme="light"] .mobile-nav-item.active { background: rgba(109,40,217,0.08); }
+            .logo-text { font-size: 0.85rem; }
+            .username-label { display: none; }
+            .meaning-box { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="app-header">
+    <div class="header-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()" id="sidebar-toggle">☰</button>
+        <div class="logo">
+            <span class="logo-icon">📚</span>
+            <span class="logo-text">English Seekhein</span>
+        </div>
+    </div>
+    <div class="header-right">
+        <button class="hdr-btn theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</button>
+        <div class="user-avatar">{{ username[0]|upper }}</div>
+        <span class="username-label">⎇ {{ username }}</span>
+        <button class="hdr-btn dots-btn" onclick="toggleProfileMenu(event)" title="Menu">⋮</button>
+    </div>
+    <!-- Profile dropdown -->
+    <div class="profile-dropdown" id="profile-dropdown">
+        <div class="dropdown-code-section">
+            <span class="dropdown-label">🔑 Unique Code</span>
+            <span class="dropdown-code-val" id="dd-code">Loading...</span>
+            <button class="copy-code-btn" onclick="copyProfileCode()">📋 Copy</button>
+        </div>
+        <button class="dropdown-item" onclick="openModal('modal-username')">✏️ Change Username</button>
+        <button class="dropdown-item" onclick="openModal('modal-progress')">📊 Progress</button>
+        <button class="dropdown-item danger" onclick="openModal('modal-delete')">🗑️ Delete Account</button>
+        <button class="dropdown-item" onclick="doLogout()">🚪 Logout</button>
+    </div>
+</header>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-nav">
+        <div class="nav-top">
+            <div class="nav-section-label">LEARN</div>
+            <button class="nav-item active" onclick="switchTab('vocabulary')" data-tab="vocabulary" data-tooltip="Vocabulary"><span class="nav-icon">📖</span><span class="nav-label">Vocabulary</span></button>
+            <button class="nav-item" onclick="switchTab('grammar')" data-tab="grammar" data-tooltip="Grammar"><span class="nav-icon">✏️</span><span class="nav-label">Grammar</span></button>
+            <button class="nav-item" onclick="switchTab('quiz')" data-tab="quiz" data-tooltip="Quiz"><span class="nav-icon">🎯</span><span class="nav-label">Quiz</span></button>
+            <button class="nav-item" onclick="switchTab('chat')" data-tab="chat" data-tooltip="Practice"><span class="nav-icon">💬</span><span class="nav-label">Practice</span></button>
+
+            <div class="nav-section-label">SPEAK</div>
+            <button class="nav-item" onclick="switchTab('voice')" data-tab="voice" data-tooltip="Voice"><span class="nav-icon">🎤</span><span class="nav-label">Voice</span></button>
+            <button class="nav-item" onclick="switchTab('talk')" data-tab="talk" data-tooltip="Talk"><span class="nav-icon">🗣️</span><span class="nav-label">Talk</span></button>
+            <button class="nav-item" onclick="switchTab('kaise-kahein')" data-tab="kaise-kahein" data-tooltip="Kaise Kahein"><span class="nav-icon">🗨️</span><span class="nav-label">Kaise Kahein</span></button>
+
+            <div class="nav-section-label">AI AGENTS</div>
+            <button class="nav-item" onclick="switchTab('word-agent')" data-tab="word-agent" data-tooltip="Word Agent"><span class="nav-icon">🤖</span><span class="nav-label">Word Agent</span></button>
+            <button class="nav-item" onclick="switchTab('grammar-agent')" data-tab="grammar-agent" data-tooltip="Grammar Agent"><span class="nav-icon">📝</span><span class="nav-label">Grammar Agent</span></button>
+            <button class="nav-item" onclick="switchTab('ai-tutor')" data-tab="ai-tutor" data-tooltip="AI Tutor"><span class="nav-icon">🧠</span><span class="nav-label">AI Tutor</span></button>
+        </div>
+        <div class="nav-bottom">
+            <div class="nav-section-label">SETTINGS</div>
+            <button class="nav-item" onclick="switchTab('settings')" data-tab="settings" data-tooltip="Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+            <button class="nav-item" onclick="doLogout()" data-tooltip="Logout"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></button>
+        </div>
+    </div>
+</aside>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<nav class="mobile-nav">
+    <button class="mobile-nav-item active" onclick="switchTab('vocabulary')" data-tab="vocabulary">📖</button>
+    <button class="mobile-nav-item" onclick="switchTab('grammar')" data-tab="grammar">✏️</button>
+    <button class="mobile-nav-item" onclick="switchTab('quiz')" data-tab="quiz">🎯</button>
+    <button class="mobile-nav-item" onclick="switchTab('chat')" data-tab="chat">💬</button>
+    <button class="mobile-nav-item" onclick="switchTab('voice')" data-tab="voice">🎤</button>
+    <button class="mobile-nav-item" onclick="switchTab('talk')" data-tab="talk">🗣️</button>
+    <button class="mobile-nav-item" onclick="switchTab('kaise-kahein')" data-tab="kaise-kahein">🗨️</button>
+</nav>
+
+<!-- ── MODALS ── -->
+<!-- Change username modal -->
+<div class="modal-overlay" id="modal-username" onclick="closeModalOutside(event, 'modal-username')">
+    <div class="modal-box">
+        <h3>✏️ Change Username</h3>
+        <p>Your unique code will stay the same — only your username will change.</p>
+        <input type="text" class="modal-input" id="new-username-input" placeholder="New username" maxlength="30"
+            onkeydown="if(event.key==='Enter') submitChangeUsername()">
+        <div class="modal-err" id="username-modal-err"></div>
+        <div class="modal-btns">
+            <button class="mbtn-cancel" onclick="closeModal('modal-username')">Cancel</button>
+            <button class="mbtn-confirm" id="change-username-btn" onclick="submitChangeUsername()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete account modal -->
+<div class="modal-overlay" id="modal-delete" onclick="closeModalOutside(event, 'modal-delete')">
+    <div class="modal-box">
+        <h3>🗑️ Delete Account</h3>
+        <p>Are you sure? This will permanently delete your account and all your progress. This cannot be undone.</p>
+        <div class="modal-err" id="delete-modal-err"></div>
+        <div class="modal-btns">
+            <button class="mbtn-cancel" onclick="closeModal('modal-delete')">Cancel</button>
+            <button class="mbtn-danger" id="delete-account-btn" onclick="submitDeleteAccount()">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Progress modal -->
+<div class="modal-overlay" id="modal-progress" onclick="closeModalOutside(event, 'modal-progress')">
+    <div class="modal-box">
+        <h3>📊 Your Progress</h3>
+        <div id="progress-modal-body" style="margin-bottom:18px;">
+            <div style="text-align:center; padding:12px 0;">
+                <div id="pm-level" style="font-size:1.6rem; font-weight:800; color:var(--accent); margin-bottom:4px;"></div>
+                <div id="pm-sentences" style="font-size:0.88rem; color:var(--text-muted); margin-bottom:14px;"></div>
+                <div id="pm-next" style="font-size:0.88rem; background:var(--surface-2); border-radius:10px; padding:10px 14px; color:var(--text); margin-bottom:14px;"></div>
+                <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap;" id="pm-levels-row"></div>
+            </div>
+        </div>
+        <div class="modal-btns">
+            <button class="mbtn-cancel" onclick="closeModal('modal-progress')">Close</button>
+            <button class="mbtn-danger" onclick="confirmResetProgress()">🔄 Reset Progress</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<main class="main-content" id="main-content">
+    <div class="page-header">
+        <h1 class="page-title" id="page-title">📖 Vocabulary</h1>
+        <div class="breadcrumb" id="breadcrumb">> learn > vocabulary</div>
+    </div>
+
+    <!-- VOCABULARY TAB -->
+    <div id="tab-vocabulary" class="tab-content active">
+        <div class="terminal-card">
+            <div class="terminal-titlebar">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="terminal-filename">word_of_the_day.js</span>
+            </div>
+            <div class="terminal-body">
+                <h2 class="card-title">⭐ Word of the Day <span class="card-title-sub">— Aaj Ka Lafz</span></h2>
+                <p class="card-desc">Roz naaya lafz seekhein — Learn a new word every day</p>
+                <button class="btn-code" onclick="loadDailyWord()" id="daily-btn">get_word()</button>
+                <div id="word-error" class="error-msg"></div>
+            </div>
+        </div>
+
+        <div id="word-display" class="word-display">
+            <div class="word-hero">
+                <div class="big-word" id="wd-word">—</div>
+                <div class="pronunciation" id="wd-pronunciation"></div>
+                <div class="word-type" id="wd-type"></div>
+            </div>
+            <div class="card">
+                <div class="meaning-box">
+                    <div class="meaning-item">
+                        <label>🇬🇧 English Meaning</label>
+                        <p id="wd-meaning-en">—</p>
+                    </div>
+                    <div class="meaning-item">
+                        <label>🇵🇰 Urdu Matlab</label>
+                        <p id="wd-meaning-ur">—</p>
+                    </div>
+                </div>
+                <div class="section-label">📝 Example Sentences</div>
+                <ul class="examples-list" id="wd-examples"></ul>
+                <div class="section-label">🔄 Synonyms (Hum Maana Alfaz)</div>
+                <div class="tags-row" id="wd-synonyms"></div>
+                <div class="section-label">↔️ Antonyms (Ulta Matlab)</div>
+                <div class="tags-row" id="wd-antonyms"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRAMMAR TAB -->
+    <div id="tab-grammar" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="terminal-filename">grammar.js</span>
+            </div>
+            <div class="terminal-body">
+                <h2 class="card-title">✏️ Grammar Lesson <span class="card-title-sub">— Grammar Sabaq</span></h2>
+                <div class="input-row" style="flex-direction:column; gap:10px;">
+                    <select id="grammar-select">
+                        <option value="">— Choose a grammar topic —</option>
+                        {% for topic in grammar_topics %}
+                        <option value="{{ topic }}">{{ topic }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn-code" onclick="loadGrammar()" id="grammar-btn">load_lesson()</button>
+                </div>
+                <div id="grammar-error" class="error-msg"></div>
+            </div>
+        </div>
+
+        <div id="grammar-section" class="grammar-section">
+            <div class="card">
+                <div class="grammar-hero">
+                    <h3 id="gr-topic">—</h3>
+                    <div style="font-size:0.9rem; opacity:0.85;" id="gr-exp-ur">—</div>
+                    <div class="structure-badge" id="gr-structure">Structure</div>
+                </div>
+                <div class="section-label">📚 Explanation</div>
+                <p style="font-size:0.95rem; line-height:1.6; margin-bottom:16px;" id="gr-exp-en">—</p>
+                <div class="section-label">📋 Rules — Qawaid</div>
+                <ul class="rules-list" id="gr-rules"></ul>
+            </div>
+            <div class="card">
+                <h2>💡 Examples — Misalein</h2>
+                <div class="example-grid" id="gr-examples"></div>
+            </div>
+            <div class="card">
+                <h2>⚠️ Common Mistakes — Aam Galtiyan</h2>
+                <div id="gr-mistakes"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ TAB -->
+    <div id="tab-quiz" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="terminal-filename">quiz.js</span>
+            </div>
+            <div class="terminal-body">
+                <h2 class="card-title">🎯 English Quiz</h2>
+                <div class="section-label">Topic — Mauzu</div>
+                <select id="quiz-topic" style="margin-bottom:12px;">
+                    <option value="General English">General English</option>
+                    <option value="Vocabulary">Vocabulary</option>
+                    <option value="Grammar">Grammar</option>
+                    <option value="Tenses">Tenses</option>
+                    <option value="Prepositions">Prepositions</option>
+                    <option value="Articles">Articles (a, an, the)</option>
+                    <option value="Spelling">Spelling</option>
+                    <option value="Idioms">Common Idioms</option>
+                </select>
+                <div class="section-label">Difficulty — Mushkil Darjah</div>
+                <div class="diff-row">
+                    <button class="diff-btn active" onclick="setDiff('beginner', this)">🟢 Beginner</button>
+                    <button class="diff-btn" onclick="setDiff('intermediate', this)">🟡 Intermediate</button>
+                    <button class="diff-btn" onclick="setDiff('advanced', this)">🔴 Advanced</button>
+                </div>
+                <button class="btn-code" onclick="startQuiz()" id="quiz-start-btn" style="width:100%; justify-content:center;">start_quiz()</button>
+                <div id="quiz-error" class="error-msg"></div>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="quiz-section">
+            <div class="card">
+                <div class="quiz-meta">
+                    <span style="font-size:0.88rem; color:var(--text-muted);">
+                        Question <span id="q-current">1</span> of <span id="q-total">5</span>
+                    </span>
+                    <span style="font-size:0.88rem; color:var(--text-muted);">
+                        Score: <strong id="q-score">0</strong>
+                    </span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="q-progress" style="width:0%"></div>
+                </div>
+                <div id="quiz-questions"></div>
+                <div id="quiz-score" class="quiz-score">
+                    <div class="score-circle">
+                        <span class="score-num" id="final-score">0</span>
+                        <span class="score-den">/5</span>
+                    </div>
+                    <div class="score-msg" id="score-msg">Well done!</div>
+                    <div class="score-sub" id="score-sub">Bohot acha kiya!</div>
+                    <button class="btn btn-primary" onclick="restartQuiz()">🔄 Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT TAB -->
+    <div id="tab-chat" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="terminal-filename">chat.js</span>
+            </div>
+            <div class="terminal-body" style="padding-bottom:0;">
+                <h2 class="card-title">💬 Conversation Practice <span class="card-title-sub">— English Bolna Seekhein</span></h2>
+                <p class="card-desc">
+                    AI teacher se English mein baat karein. Jo galtiyan hongi woh dheere se theek kar dega.
+                </p>
+                <div class="chat-starters" id="starters" style="padding-left:0;">
+                    <button class="starter-btn" onclick="useStarter(this)">Introduce yourself</button>
+                    <button class="starter-btn" onclick="useStarter(this)">Talk about hobbies</button>
+                    <button class="starter-btn" onclick="useStarter(this)">Describe your day</button>
+                    <button class="starter-btn" onclick="useStarter(this)">Ask about weather</button>
+                    <button class="starter-btn" onclick="useStarter(this)">Practice job interview</button>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="msg ai">
+                            <div class="bubble">
+                                👋 Hello! I'm your English teacher. Let's practice English together!<br><br>
+                                You can talk about anything — your day, hobbies, or any topic. I'll help you improve your English. <em>(Aap kuch bhi English mein likhein — main aapki help karunga!)</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-row">
+                        <textarea id="chat-input" placeholder="Type in English... (ya Roman Urdu mein)" rows="1"
+                            onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendMessage()}"
+                            oninput="autoResize(this)"></textarea>
+                        <button class="btn btn-primary" onclick="sendMessage()" id="send-btn">Send ➤</button>
+                    </div>
+                </div>
+                <div style="text-align:right; padding:8px 4px 12px;">
+                    <button onclick="clearChat()" style="font-size:0.8rem; color:var(--text-muted); background:none; border:none; cursor:pointer; font-family:'JetBrains Mono',monospace;">
+                        🗑️ Clear chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TALK TAB -->
+    <div id="tab-talk" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="terminal-filename">talk.js</span>
+            </div>
+            <div class="terminal-body" style="padding-bottom:0;">
+                <h2 class="card-title">🗣️ Talk Like a Human</h2>
+                <p class="card-desc">
+                    Alex se milein — bilkul dosto ki tarah English mein baat karein<br>
+                    <span style="color:var(--text-muted);">🎤 Button dabao → bolein → button dobara dabao → Alex jawab dega</span>
+                </p>
+                <div class="chat-container" style="height:440px;">
+                    <div class="chat-messages" id="talk-messages"></div>
+                </div>
+                <div style="text-align:center; padding:14px 0 6px;">
+                    <button id="talk-mic-btn" class="mic-btn" onclick="toggleTalkRecording()">🎤</button>
+                    <div id="talk-status" style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">
+                        Alex se milein — Talk tab open karo
+                    </div>
+                </div>
+                <div id="talk-error" class="error-msg" style="text-align:center; padding-bottom:10px;"></div>
+                <div style="text-align:right; padding-bottom:12px;">
+                    <button onclick="resetTalk()" style="font-size:0.8rem; color:var(--text-muted); background:none; border:none; cursor:pointer; font-family:'JetBrains Mono',monospace;">
+                        🔄 New conversation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOICE TAB -->
+    <div id="tab-voice" class="tab-content">
+        <!-- Memory Panel -->
+        <div class="card" id="memory-card">
+            <h2>🧠 Aapki Progress — Your Memory</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+                <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
+                    <div style="font-size:1.8rem; font-weight:700; color:var(--accent);" id="mem-sessions">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Sessions</div>
+                </div>
+                <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
+                    <div style="font-size:1.8rem; font-weight:700; color:var(--secondary);" id="mem-sentences">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Sentences Practiced</div>
+                </div>
+            </div>
+            <div id="mem-mistakes-wrap" style="display:none;">
+                <div class="section-label">⚠️ Baar Baar Hone Wali Galtiyan — Repeat Mistakes</div>
+                <div id="mem-mistakes"></div>
+            </div>
+            <div id="mem-empty" style="font-size:0.88rem; color:var(--text-muted);">
+                Abhi koi data nahi — pehle kuch bolein!
+            </div>
+            <div style="text-align:right; margin-top:12px;">
+                <button onclick="clearMemory()" style="font-size:0.8rem; color:var(--text-muted); background:none; border:none; cursor:pointer; font-family:'JetBrains Mono',monospace;">
+                    🗑️ Memory clear karein
+                </button>
+            </div>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <h2 style="justify-content:center;">🎤 Voice Practice — Awaz Se Seekhein</h2>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:20px;">
+                English mein bolein — AI aapki galtiyan theek karega, tense batayega, aur awaaz mein jawab dega
+            </p>
+            <button id="mic-btn" class="mic-btn" onclick="toggleRecording()">🎤</button>
+            <div id="mic-status" style="margin-top:14px; font-size:0.9rem; color:var(--text-muted);">
+                Button dabao aur English mein bolein
+            </div>
+            <div id="voice-error" class="error-msg" style="margin-top:8px;"></div>
+            <div style="margin-top:12px; text-align:right;">
+                <button onclick="clearVoiceHistory()" style="font-size:0.8rem; color:var(--text-muted); background:none; border:none; cursor:pointer; font-family:'JetBrains Mono',monospace;">
+                    🔄 New conversation
+                </button>
+            </div>
+        </div>
+
+        <!-- Conversation history log -->
+        <div id="voice-history-card" class="card" style="display:none;">
+            <h2>💬 Conversation — Baat Cheet</h2>
+            <div id="voice-history-log" style="display:flex; flex-direction:column; gap:10px; max-height:300px; overflow-y:auto;"></div>
+        </div>
+
+        <div id="voice-transcript-card" class="card" style="display:none;">
+            <h2>📝 Aap Ne Kaha</h2>
+            <div id="voice-transcript" style="font-size:1rem; padding:12px 16px; background:var(--surface-2); border-radius:10px; line-height:1.6; font-style:italic;"></div>
+        </div>
+
+        <div id="voice-analysis-card" class="card" style="display:none;">
+            <h2>🔍 Analysis — Jaiza</h2>
+            <div class="section-label">⏰ Tense — Zamana</div>
+            <div id="voice-tense" class="tense-badge" style="margin-bottom:16px; display:block;"></div>
+            <div id="voice-corrected-wrap" style="display:none; margin-bottom:16px;">
+                <div class="section-label">✅ Sahi Tarika — Correct Version</div>
+                <div id="voice-corrected" style="padding:10px 16px; background:rgba(16,185,129,0.1); border-radius:10px; border-left:3px solid var(--success); font-weight:600;"></div>
+            </div>
+            <div id="voice-errors-wrap" style="display:none;">
+                <div class="section-label">⚠️ Galtiyan — Mistakes</div>
+                <div id="voice-errors"></div>
+            </div>
+            <div id="voice-no-errors" style="display:none; padding:10px 16px; background:rgba(16,185,129,0.1); border-radius:10px; color:var(--success); font-weight:600;">
+                ✅ Koi galti nahi! Aapka sentence bilkul sahi hai!
+            </div>
+        </div>
+
+        <div id="voice-teacher-card" class="card" style="display:none;">
+            <h2>👩‍🏫 Teacher Ka Jawab</h2>
+            <div id="voice-encouragement" style="font-size:0.9rem; color:var(--success); font-weight:700; margin-bottom:10px;"></div>
+            <div id="voice-teacher-text" style="font-size:0.95rem; line-height:1.7; margin-bottom:16px;"></div>
+            <button class="btn btn-secondary" onclick="replayAudio()" id="replay-btn" style="display:none;">
+                🔊 Dobara Sunein
+            </button>
+        </div>
+    </div>
+
+    <!-- KAISE KAHEIN TAB -->
+    <div id="tab-kaise-kahein" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="terminal-filename">kaise_kahein.js</span>
+            </div>
+            <div class="terminal-body">
+                <h2 class="card-title">🗨️ Kaise Kahein <span class="card-title-sub">— How Do I Say This?</span></h2>
+                <p class="card-desc">Urdu mein likhein — AI batayega ke English mein kaise kahein</p>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <textarea id="hts-input"
+                        placeholder="Urdu ya Roman Urdu mein likhein... (e.g. main ice cream bana raha hoon)"
+                        rows="3"
+                        onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); askHowToSay()}"
+                    ></textarea>
+                    <button class="btn-code" onclick="askHowToSay()" id="hts-btn">ask_how_to_say()</button>
+                </div>
+                <div id="hts-error" class="error-msg"></div>
+            </div>
+        </div>
+
+        <div id="hts-result" style="display:none; animation: fadeInUp 0.3s ease;">
+            <!-- Main phrase -->
+            <div class="card" style="border-left:4px solid var(--accent);">
+                <div class="section-label">🇬🇧 English mein kahein</div>
+                <div id="hts-phrase" style="font-size:1.4rem; font-weight:700; color:var(--accent); margin-bottom:8px;"></div>
+                <div id="hts-pronunciation" style="font-size:0.88rem; color:var(--text-muted); font-style:italic;"></div>
+            </div>
+            <!-- Alternatives -->
+            <div class="card" id="hts-alt-card">
+                <h2>💬 Aur Tarikay — Other Natural Ways</h2>
+                <div id="hts-alternatives"></div>
+            </div>
+            <!-- Grammar + Urdu tip -->
+            <div class="card">
+                <h2>📚 Grammar Note</h2>
+                <div id="hts-grammar" style="font-size:0.95rem; line-height:1.6; padding:12px 16px;
+                     background:var(--surface-2); border-radius:10px; border-left:3px solid var(--secondary); margin-bottom:14px;"></div>
+                <div id="hts-urdu-tip" style="font-size:0.9rem; color:var(--success); font-weight:600; padding:10px 14px;
+                     background:rgba(16,185,129,0.1); border-radius:10px;"></div>
+            </div>
+            <!-- Example conversation -->
+            <div class="card">
+                <h2>🗣️ Example Conversation</h2>
+                <div id="hts-conversation" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORD AGENT TAB -->
+    <div id="tab-word-agent" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar"><span class="t-dot red"></span><span class="t-dot yellow"></span><span class="t-dot green"></span><span class="terminal-filename">word_agent.py</span></div>
+            <div class="terminal-body" style="text-align:center; padding: 60px 20px;">
+                <div style="font-size:3rem; margin-bottom:16px;">🤖</div>
+                <div class="logo-text" style="font-size:1.2rem;">Word Agent</div>
+                <div style="color:var(--text-muted); margin-top:8px; font-size:0.85rem;">// Coming Soon — AI-powered word learning agent</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRAMMAR AGENT TAB -->
+    <div id="tab-grammar-agent" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar"><span class="t-dot red"></span><span class="t-dot yellow"></span><span class="t-dot green"></span><span class="terminal-filename">grammar_agent.py</span></div>
+            <div class="terminal-body" style="text-align:center; padding: 60px 20px;">
+                <div style="font-size:3rem; margin-bottom:16px;">📝</div>
+                <div class="logo-text" style="font-size:1.2rem;">Grammar Agent</div>
+                <div style="color:var(--text-muted); margin-top:8px; font-size:0.85rem;">// Coming Soon — AI-powered grammar correction agent</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI TUTOR TAB -->
+    <div id="tab-ai-tutor" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar"><span class="t-dot red"></span><span class="t-dot yellow"></span><span class="t-dot green"></span><span class="terminal-filename">ai_tutor.py</span></div>
+            <div class="terminal-body" style="text-align:center; padding: 60px 20px;">
+                <div style="font-size:3rem; margin-bottom:16px;">🧠</div>
+                <div class="logo-text" style="font-size:1.2rem;">AI Tutor</div>
+                <div style="color:var(--text-muted); margin-top:8px; font-size:0.85rem;">// Coming Soon — Personalized AI tutor for Urdu speakers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="tab-settings" class="tab-content">
+        <div class="terminal-card">
+            <div class="terminal-titlebar"><span class="t-dot red"></span><span class="t-dot yellow"></span><span class="t-dot green"></span><span class="terminal-filename">settings.json</span></div>
+            <div class="terminal-body">
+                <h2 class="card-title">⚙️ Settings</h2>
+                <div class="section-label">Theme</div>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                    <span style="font-size:0.9rem;">Dark / Light mode</span>
+                    <button class="btn-code" onclick="toggleTheme()" id="settings-theme-btn">toggle_theme()</button>
+                </div>
+                <div class="section-label">Account</div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                    <button class="btn-code" onclick="openModal('modal-username')">change_username()</button>
+                    <button class="btn-code" onclick="openModal('modal-progress')">view_progress()</button>
+                    <button class="btn-code" style="border-color:var(--danger); color:var(--danger);" onclick="openModal('modal-delete')">delete_account()</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+// ── Theme ──────────────────────────────────────────────────────────────────
+(function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+
+// Set theme btn icon on load
+document.addEventListener('DOMContentLoaded', () => {
+    const theme = localStorage.getItem('theme') || 'dark';
+    document.getElementById('theme-btn').textContent = theme === 'dark' ? '🌙' : '☀️';
+});
+
+// ── Sidebar toggle ─────────────────────────────────────────────────────────
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.body.classList.toggle('sidebar-collapsed');
+}
+
+// ── Updated switchTab ──────────────────────────────────────────────────────
+const PAGE_META = {
+    'vocabulary':     { title: '📖 Vocabulary',     crumb: '> learn > vocabulary' },
+    'grammar':        { title: '✏️ Grammar',         crumb: '> learn > grammar' },
+    'quiz':           { title: '🎯 Quiz',            crumb: '> learn > quiz' },
+    'chat':           { title: '💬 Practice',        crumb: '> learn > practice' },
+    'voice':          { title: '🎤 Voice',           crumb: '> speak > voice' },
+    'talk':           { title: '🗣️ Talk',            crumb: '> speak > talk' },
+    'kaise-kahein':   { title: '🗨️ Kaise Kahein',   crumb: '> speak > kaise-kahein' },
+    'word-agent':     { title: '🤖 Word Agent',      crumb: '> ai-agents > word-agent' },
+    'grammar-agent':  { title: '📝 Grammar Agent',   crumb: '> ai-agents > grammar-agent' },
+    'ai-tutor':       { title: '🧠 AI Tutor',        crumb: '> ai-agents > ai-tutor' },
+    'settings':       { title: '⚙️ Settings',        crumb: '> settings' },
+};
+
+function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => el.classList.remove('active'));
+    const tabEl = document.getElementById('tab-' + name);
+    if (tabEl) tabEl.classList.add('active');
+    document.querySelectorAll(`[data-tab="${name}"]`).forEach(el => el.classList.add('active'));
+    const meta = PAGE_META[name] || { title: name, crumb: '> ' + name };
+    document.getElementById('page-title').textContent = meta.title;
+    document.getElementById('breadcrumb').textContent = meta.crumb;
+    if (name === 'voice') loadMemory();
+    if (name === 'talk') initTalk();
+    if (window.innerWidth <= 768) document.getElementById('sidebar')?.classList.remove('mobile-open');
+}
+
+// ── Updated toggleTheme ────────────────────────────────────────────────────
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    const icon = next === 'dark' ? '🌙' : '☀️';
+    document.getElementById('theme-btn').textContent = icon;
+    const stBtn = document.getElementById('settings-theme-btn');
+    if (stBtn) stBtn.title = icon;
+}
+
+async function doLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/login';
+}
+
+// ── Profile menu ───────────────────────────────────────────────────────────
+let profileCodeCache = null;
+
+async function toggleProfileMenu(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('profile-dropdown');
+    const isOpen = menu.classList.contains('show');
+    menu.classList.toggle('show', !isOpen);
+    if (!isOpen && !profileCodeCache) {
+        try {
+            const res = await fetch('/api/user/info');
+            const data = await res.json();
+            profileCodeCache = data.code;
+            document.getElementById('dd-code').textContent = data.code;
+        } catch { document.getElementById('dd-code').textContent = 'Could not load'; }
+    }
+}
+
+document.addEventListener('click', () => {
+    document.getElementById('profile-dropdown').classList.remove('show');
+});
+
+function copyProfileCode() {
+    if (!profileCodeCache) return;
+    navigator.clipboard.writeText(profileCodeCache).then(() => {
+        const btn = document.querySelector('.copy-code-btn');
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+const LEVEL_MINS  = [0, 10, 30, 70, 150];
+const LEVEL_NAMES = ['🌱 Bad', '📈 Good', '⭐ Fluent', '🏆 Native', '🚀 Ready to Launch'];
+
+async function openModal(id) {
+    document.getElementById('profile-dropdown').classList.remove('show');
+    document.getElementById(id).classList.add('show');
+    if (id === 'modal-username') {
+        document.getElementById('new-username-input').value = '';
+        document.getElementById('username-modal-err').textContent = '';
+        setTimeout(() => document.getElementById('new-username-input').focus(), 100);
+    }
+    if (id === 'modal-delete') document.getElementById('delete-modal-err').textContent = '';
+    if (id === 'modal-progress') {
+        try {
+            const res = await fetch('/api/memory');
+            const mem = await res.json();
+            const sentences = mem.total_sentences || 0;
+            const idx = LEVEL_MINS.reduce((acc, min, i) => sentences >= min ? i : acc, 0);
+            document.getElementById('pm-level').textContent = LEVEL_NAMES[idx];
+            document.getElementById('pm-sentences').textContent = `${sentences} sentences practiced`;
+            const nextIdx = idx + 1;
+            document.getElementById('pm-next').textContent = nextIdx < LEVEL_NAMES.length
+                ? `⬆️ ${LEVEL_MINS[nextIdx] - sentences} more sentences to reach ${LEVEL_NAMES[nextIdx]}`
+                : '🏅 You have reached the highest level!';
+            document.getElementById('pm-levels-row').innerHTML = LEVEL_NAMES.map((name, i) =>
+                `<span style="padding:4px 10px; border-radius:20px; font-size:0.78rem; font-weight:600;
+                    background:${i < idx ? 'rgba(16,185,129,0.15)' : i === idx ? 'var(--accent)' : 'var(--surface-2)'};
+                    color:${i === idx ? 'var(--bg)' : i < idx ? 'var(--success)' : 'var(--text-muted)'};">
+                    ${name}
+                </span>`
+            ).join('');
+        } catch {}
+    }
+}
+
+async function confirmResetProgress() {
+    if (!confirm('Reset all progress? This cannot be undone.')) return;
+    await fetch('/api/memory/clear', { method: 'POST' });
+    closeModal('modal-progress');
+    window.location.reload();
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+
+function closeModalOutside(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+}
+
+async function submitChangeUsername() {
+    const input = document.getElementById('new-username-input');
+    const errEl = document.getElementById('username-modal-err');
+    const btn = document.getElementById('change-username-btn');
+    const newName = input.value.trim();
+    errEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    try {
+        const res = await fetch('/api/user/change-username', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: newName })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        closeModal('modal-username');
+        const usernameLabel = document.querySelector('.username-label');
+        if (usernameLabel) usernameLabel.textContent = '⎇ ' + data.username;
+    } catch (e) {
+        errEl.textContent = '⚠️ ' + (e.message || 'Could not change username.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save';
+    }
+}
+
+async function submitDeleteAccount() {
+    const errEl = document.getElementById('delete-modal-err');
+    const btn = document.getElementById('delete-account-btn');
+    btn.disabled = true;
+    btn.textContent = 'Deleting...';
+    try {
+        const res = await fetch('/api/user/delete', { method: 'POST' });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        window.location.href = '/login';
+    } catch (e) {
+        errEl.textContent = '⚠️ ' + (e.message || 'Could not delete account.');
+        btn.disabled = false;
+        btn.textContent = 'Yes, Delete';
+    }
+}
+
+// ── State ──────────────────────────────────────────────────────────────────
+let chatMessages = [];
+let quizData = null;
+let currentQ = 0;
+let score = 0;
+let quizDifficulty = 'beginner';
+let waitingForNext = false;
+
+// ── VOCABULARY ─────────────────────────────────────────────────────────────
+async function searchWord() {
+    const word = document.getElementById('word-input').value.trim();
+    if (!word) return;
+
+    const btn = document.getElementById('search-btn');
+    const err = document.getElementById('word-error');
+    err.textContent = '';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span>';
+
+    try {
+        const res = await fetch('/api/vocabulary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        renderWord(data);
+    } catch (e) {
+        err.textContent = '⚠️ ' + (e.message || 'Something went wrong. Try again.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Search';
+    }
+}
+
+async function loadDailyWord() {
+    const btn = document.getElementById('daily-btn');
+    btn.disabled = true;
+    btn.innerHTML = '< <span class="loader" style="border-color:rgba(0,0,0,.2); border-top-color:var(--accent);"></span> Loading... />';
+
+    try {
+        const res = await fetch('/api/daily-word');
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        renderWord(data);
+    } catch (e) {
+        document.getElementById('word-error').textContent = '⚠️ ' + (e.message || 'Could not load word.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'get_word()';
+    }
+}
+
+function renderWord(data) {
+    document.getElementById('wd-word').textContent = data.word || '—';
+    document.getElementById('wd-pronunciation').textContent = data.pronunciation || '';
+    document.getElementById('wd-type').textContent = data.word_type || '';
+    document.getElementById('wd-meaning-en').textContent = data.meaning_english || '—';
+    document.getElementById('wd-meaning-ur').textContent = data.meaning_urdu || '—';
+
+    const exList = document.getElementById('wd-examples');
+    exList.innerHTML = (data.example_sentences || []).map(s => {
+        const en = typeof s === 'object' ? s.en : s;
+        const ur = typeof s === 'object' ? s.ur : '';
+        return `<li>${en}${ur ? `<div style="font-size:0.82rem;color:var(--text-muted);margin-top:3px;">🇵🇰 ${ur}</div>` : ''}</li>`;
+    }).join('');
+
+    const synRow = document.getElementById('wd-synonyms');
+    synRow.innerHTML = (data.synonyms || []).map(w => {
+        const word = typeof w === 'object' ? w.word : w;
+        const urdu = typeof w === 'object' ? w.urdu : '';
+        return `<span class="tag tag-success" style="display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:5px 12px;">
+            <span>${word}</span>
+            ${urdu ? `<span style="font-size:0.7rem;opacity:0.75;">${urdu}</span>` : ''}
+        </span>`;
+    }).join('');
+
+    const antRow = document.getElementById('wd-antonyms');
+    antRow.innerHTML = (data.antonyms || []).map(w => {
+        const word = typeof w === 'object' ? w.word : w;
+        const urdu = typeof w === 'object' ? w.urdu : '';
+        return `<span class="tag tag-danger" style="display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:5px 12px;">
+            <span>${word}</span>
+            ${urdu ? `<span style="font-size:0.7rem;opacity:0.75;">${urdu}</span>` : ''}
+        </span>`;
+    }).join('');
+
+    document.getElementById('word-display').classList.add('show');
+    document.getElementById('word-display').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── GRAMMAR ────────────────────────────────────────────────────────────────
+async function loadGrammar() {
+    const topic = document.getElementById('grammar-select').value;
+    if (!topic) {
+        document.getElementById('grammar-error').textContent = '⚠️ Please select a topic first.';
+        return;
+    }
+
+    const btn = document.getElementById('grammar-btn');
+    const err = document.getElementById('grammar-error');
+    err.textContent = '';
+    btn.disabled = true;
+    btn.innerHTML = '< <span class="loader"></span> Loading... />';
+
+    try {
+        const res = await fetch('/api/grammar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        renderGrammar(data);
+    } catch (e) {
+        err.textContent = '⚠️ ' + (e.message || 'Could not load lesson.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'load_lesson()';
+    }
+}
+
+function renderGrammar(data) {
+    document.getElementById('gr-topic').textContent = data.topic || '—';
+    document.getElementById('gr-exp-en').textContent = data.explanation_english || '';
+    document.getElementById('gr-exp-ur').textContent = data.explanation_urdu || '';
+    document.getElementById('gr-structure').textContent = data.structure || '';
+
+    const rules = document.getElementById('gr-rules');
+    rules.innerHTML = (data.rules || []).map(r => `<li>${r}</li>`).join('');
+
+    const exGrid = document.getElementById('gr-examples');
+    exGrid.innerHTML = (data.examples || []).map(ex => `
+        <div class="example-card">
+            <div class="sentence">"${ex.sentence}"</div>
+            <div class="urdu">${ex.urdu || ''}</div>
+            <div class="note">${ex.note || ''}</div>
+        </div>
+    `).join('');
+
+    const mistakes = document.getElementById('gr-mistakes');
+    mistakes.innerHTML = (data.common_mistakes || []).map(m => `
+        <div class="mistake-card">
+            <div class="mistake-wrong">${m.wrong}</div>
+            <div class="mistake-correct">${m.correct}</div>
+            <div class="mistake-tip">${m.tip}</div>
+        </div>
+    `).join('');
+
+    const section = document.getElementById('grammar-section');
+    section.classList.add('show');
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── QUIZ ───────────────────────────────────────────────────────────────────
+function setDiff(diff, el) {
+    quizDifficulty = diff;
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+}
+
+async function startQuiz() {
+    const topic = document.getElementById('quiz-topic').value;
+    const btn = document.getElementById('quiz-start-btn');
+    const err = document.getElementById('quiz-error');
+    err.textContent = '';
+    btn.disabled = true;
+    btn.innerHTML = '< <span class="loader"></span> Generating... />';
+
+    try {
+        const res = await fetch('/api/quiz', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic, difficulty: quizDifficulty })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        quizData = data;
+        currentQ = 0;
+        score = 0;
+        waitingForNext = false;
+        document.getElementById('quiz-score').classList.remove('show');
+        document.getElementById('quiz-section').classList.add('show');
+        renderQuestion();
+        document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth' });
+    } catch (e) {
+        err.textContent = '⚠️ ' + (e.message || 'Could not generate quiz.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'start_quiz()';
+    }
+}
+
+function renderQuestion() {
+    if (!quizData || currentQ >= quizData.questions.length) {
+        showScore();
+        return;
+    }
+
+    const q = quizData.questions[currentQ];
+    const total = quizData.questions.length;
+
+    document.getElementById('q-current').textContent = currentQ + 1;
+    document.getElementById('q-total').textContent = total;
+    document.getElementById('q-score').textContent = score;
+    document.getElementById('q-progress').style.width = ((currentQ / total) * 100) + '%';
+
+    const container = document.getElementById('quiz-questions');
+    const optKeys = Object.keys(q.options);
+    container.innerHTML = `
+        <div class="question-card">
+            <div class="question-text">Q${currentQ + 1}. ${q.question}</div>
+            <div class="options-grid">
+                ${optKeys.map(k => `
+                    <button class="option-btn" onclick="selectOption('${k}', '${q.correct}', this)" id="opt-${k}">
+                        <span class="letter">${k}</span>
+                        <span>${q.options[k]}</span>
+                    </button>
+                `).join('')}
+            </div>
+            <div class="explanation-box" id="explanation">
+                💡 ${q.explanation}
+            </div>
+        </div>
+        <div style="text-align:right; margin-top:8px;">
+            <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn" style="display:none;">
+                Next →
+            </button>
+        </div>
+    `;
+}
+
+function selectOption(selected, correct, el) {
+    if (waitingForNext) return;
+    waitingForNext = true;
+
+    const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+        el.classList.add('correct');
+        score++;
+        document.getElementById('q-score').textContent = score;
+    } else {
+        el.classList.add('wrong');
+        document.getElementById('opt-' + correct)?.classList.add('correct');
+    }
+
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('next-btn').style.display = 'inline-flex';
+}
+
+function nextQuestion() {
+    currentQ++;
+    waitingForNext = false;
+    if (currentQ >= quizData.questions.length) {
+        showScore();
+    } else {
+        renderQuestion();
+    }
+}
+
+function showScore() {
+    const total = quizData.questions.length;
+    document.getElementById('quiz-questions').innerHTML = '';
+    document.getElementById('q-progress').style.width = '100%';
+
+    document.getElementById('final-score').textContent = score;
+
+    const pct = score / total;
+    let msg, sub;
+    if (pct === 1)      { msg = '🏆 Perfect Score!'; sub = 'Kamaal! Aap ne sab theek kiya!'; }
+    else if (pct >= 0.8) { msg = '⭐ Excellent!'; sub = 'Bohot acha! Thori si practice aur karein.'; }
+    else if (pct >= 0.6) { msg = '👍 Good Job!'; sub = 'Acha kiya! Aur mehnat karein.'; }
+    else if (pct >= 0.4) { msg = '📚 Keep Learning!'; sub = 'Himmat rakho — practice se improve hoga!'; }
+    else                 { msg = '💪 Keep Practicing!'; sub = 'Koi baat nahi — dusri baar better karenge!'; }
+
+    document.getElementById('score-msg').textContent = msg;
+    document.getElementById('score-sub').textContent = sub;
+    document.getElementById('quiz-score').classList.add('show');
+}
+
+function restartQuiz() {
+    document.getElementById('quiz-score').classList.remove('show');
+    document.getElementById('quiz-section').classList.remove('show');
+    startQuiz();
+}
+
+// ── CHAT ───────────────────────────────────────────────────────────────────
+function useStarter(btn) {
+    document.getElementById('chat-input').value = btn.textContent;
+    document.getElementById('chat-input').focus();
+}
+
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+function appendMsg(role, text, typing = false) {
+    const container = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    div.innerHTML = `<div class="bubble${typing ? ' typing' : ''}">${text}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return div.querySelector('.bubble');
+}
+
+async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const btn = document.getElementById('send-btn');
+    btn.disabled = true;
+    input.value = '';
+    input.style.height = 'auto';
+
+    appendMsg('user', text);
+    chatMessages.push({ role: 'user', content: text });
+
+    const aiBubble = appendMsg('ai', '...', true);
+
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: chatMessages })
+        });
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+        aiBubble.textContent = '';
+        aiBubble.classList.remove('typing');
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            const lines = decoder.decode(value).split('\n');
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const d = line.slice(6);
+                    if (d === '[DONE]') break;
+                    try {
+                        const obj = JSON.parse(d);
+                        if (obj.text) {
+                            fullText += obj.text;
+                            aiBubble.textContent = fullText;
+                            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+                        }
+                    } catch {}
+                }
+            }
+        }
+
+        chatMessages.push({ role: 'assistant', content: fullText });
+    } catch (e) {
+        aiBubble.textContent = '⚠️ Error connecting. Please try again.';
+        aiBubble.classList.remove('typing');
+    } finally {
+        btn.disabled = false;
+        input.focus();
+    }
+}
+
+function clearChat() {
+    chatMessages = [];
+    const container = document.getElementById('chat-messages');
+    container.innerHTML = `
+        <div class="msg ai">
+            <div class="bubble">
+                👋 Hello! I'm your English teacher. Let's start fresh!<br><br>
+                What would you like to practice today? <em>(Aaj kya seekhna chahte hain?)</em>
+            </div>
+        </div>`;
+}
+
+// ── VOICE ──────────────────────────────────────────────────────────────────
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+let lastAudioUrl = null;
+let voiceHistory = [];
+
+async function loadMemory() {
+    try {
+        const res = await fetch('/api/memory');
+        const mem = await res.json();
+        document.getElementById('mem-sessions').textContent = mem.total_sessions || 0;
+        document.getElementById('mem-sentences').textContent = mem.total_sentences || 0;
+        const mistakes = mem.common_mistakes || [];
+        if (mistakes.length > 0) {
+            document.getElementById('mem-empty').style.display = 'none';
+            document.getElementById('mem-mistakes-wrap').style.display = 'block';
+            document.getElementById('mem-mistakes').innerHTML = mistakes.slice(0, 5).map(m => `
+                <div class="mistake-card" style="margin-bottom:8px;">
+                    <div class="mistake-wrong">${m.mistake} <span style="float:right; font-size:0.75rem; background:rgba(239,68,68,0.15); padding:2px 8px; border-radius:10px;">${m.count}x</span></div>
+                    <div class="mistake-correct">${m.fix}</div>
+                </div>
+            `).join('');
+        } else {
+            document.getElementById('mem-empty').style.display = 'block';
+            document.getElementById('mem-mistakes-wrap').style.display = 'none';
+        }
+    } catch(e) {}
+}
+
+async function clearMemory() {
+    if (!confirm('Puri memory clear kar dein?')) return;
+    await fetch('/api/memory/clear', { method: 'POST' });
+    loadMemory();
+}
+
+function clearVoiceHistory() {
+    voiceHistory = [];
+    document.getElementById('voice-history-log').innerHTML = '';
+    document.getElementById('voice-history-card').style.display = 'none';
+    document.getElementById('voice-transcript-card').style.display = 'none';
+    document.getElementById('voice-analysis-card').style.display = 'none';
+    document.getElementById('voice-teacher-card').style.display = 'none';
+}
+
+function addToHistoryLog(role, text) {
+    const log = document.getElementById('voice-history-log');
+    const div = document.createElement('div');
+    const isUser = role === 'user';
+    div.style.cssText = `align-self:${isUser ? 'flex-end' : 'flex-start'}; max-width:80%;`;
+    div.innerHTML = `
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:3px; text-align:${isUser ? 'right' : 'left'}">
+            ${isUser ? '🧑 Aap' : '👩‍🏫 Teacher'}
+        </div>
+        <div style="padding:8px 12px; border-radius:12px; font-size:0.88rem; line-height:1.5;
+            background:${isUser ? 'var(--accent)' : 'var(--surface)'}; color:${isUser ? 'var(--bg)' : 'var(--text)'};
+            border:1px solid var(--border);">
+            ${text}
+        </div>`;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    document.getElementById('voice-history-card').style.display = 'block';
+}
+
+async function toggleRecording() {
+    if (isRecording) {
+        stopRecording();
+    } else {
+        await startRecording();
+    }
+}
+
+async function startRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+        mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+            const blob = new Blob(audioChunks, { type: mimeType });
+            stream.getTracks().forEach(t => t.stop());
+            await processAudio(blob, mimeType);
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+
+        const btn = document.getElementById('mic-btn');
+        btn.classList.add('recording');
+        btn.textContent = '⏹️';
+        document.getElementById('mic-status').textContent = 'Recording... band karne ke liye dobara dabao';
+        document.getElementById('voice-error').textContent = '';
+
+    } catch (e) {
+        document.getElementById('voice-error').textContent = '⚠️ Microphone access nahi mila. Browser mein allow karein.';
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
+    isRecording = false;
+    const btn = document.getElementById('mic-btn');
+    btn.classList.remove('recording');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+    document.getElementById('mic-status').textContent = 'Processing... thoda intezaar karein';
+}
+
+async function processAudio(blob, mimeType) {
+    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+    const formData = new FormData();
+    formData.append('audio', blob, `recording.${ext}`);
+
+    try {
+        // Step 1: Transcribe
+        const tRes = await fetch('/api/voice/transcribe', { method: 'POST', body: formData });
+        const tData = await tRes.json();
+        if (tData.error) throw new Error(tData.error);
+
+        const userText = tData.text;
+        document.getElementById('voice-transcript').textContent = userText;
+        document.getElementById('voice-transcript-card').style.display = 'block';
+        document.getElementById('mic-status').textContent = 'Analyzing...';
+
+        voiceHistory.push({ role: 'user', content: userText });
+        addToHistoryLog('user', userText);
+
+        // Step 2: Analyze
+        const aRes = await fetch('/api/voice/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: userText, history: voiceHistory })
+        });
+        const analysis = await aRes.json();
+        if (analysis.error) throw new Error(analysis.error);
+        renderVoiceAnalysis(analysis);
+
+        // Step 3: Speak teacher response
+        const sRes = await fetch('/api/voice/speak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: analysis.teacher_response })
+        });
+        voiceHistory.push({ role: 'assistant', content: analysis.teacher_response });
+        addToHistoryLog('assistant', analysis.teacher_response);
+
+        if (sRes.ok) {
+            const audioBlob = await sRes.blob();
+            if (lastAudioUrl) URL.revokeObjectURL(lastAudioUrl);
+            lastAudioUrl = URL.createObjectURL(audioBlob);
+            new Audio(lastAudioUrl).play();
+            document.getElementById('replay-btn').style.display = 'inline-flex';
+        }
+
+        loadMemory();
+
+    } catch (e) {
+        document.getElementById('voice-error').textContent = '⚠️ ' + (e.message || 'Kuch masla hua. Dobara koshish karein.');
+    } finally {
+        const btn = document.getElementById('mic-btn');
+        btn.textContent = '🎤';
+        btn.disabled = false;
+        document.getElementById('mic-status').textContent = 'Button dabao aur English mein bolein';
+    }
+}
+
+function renderVoiceAnalysis(data) {
+    document.getElementById('voice-tense').innerHTML =
+        `<strong>${data.tense || '—'}</strong> &nbsp;|&nbsp; <span style="color:var(--text-muted)">${data.tense_urdu || ''}</span>`;
+
+    if (data.has_errors && data.corrected) {
+        document.getElementById('voice-corrected').textContent = data.corrected;
+        document.getElementById('voice-corrected-wrap').style.display = 'block';
+    } else {
+        document.getElementById('voice-corrected-wrap').style.display = 'none';
+    }
+
+    const errors = data.errors || [];
+    if (data.has_errors && errors.length > 0) {
+        document.getElementById('voice-errors').innerHTML = errors.map(e => `
+            <div class="mistake-card">
+                <div class="mistake-wrong">${e.mistake}</div>
+                <div class="mistake-correct">${e.fix}</div>
+                <div class="mistake-tip">${e.explanation}</div>
+            </div>
+        `).join('');
+        document.getElementById('voice-errors-wrap').style.display = 'block';
+        document.getElementById('voice-no-errors').style.display = 'none';
+    } else {
+        document.getElementById('voice-errors-wrap').style.display = 'none';
+        document.getElementById('voice-no-errors').style.display = 'block';
+    }
+    document.getElementById('voice-analysis-card').style.display = 'block';
+
+    document.getElementById('voice-encouragement').textContent = data.encouragement || '';
+    document.getElementById('voice-teacher-text').textContent = data.teacher_response || '';
+    document.getElementById('voice-teacher-card').style.display = 'block';
+    document.getElementById('voice-teacher-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function replayAudio() {
+    if (lastAudioUrl) new Audio(lastAudioUrl).play();
+}
+
+// ── TALK ───────────────────────────────────────────────────────────────────
+let talkRecorder = null;
+let talkChunks = [];
+let talkRecording = false;
+let talkHistory = [];
+let talkStarted = false;
+
+async function initTalk() {
+    if (talkStarted) return;
+    talkStarted = true;
+    setTalkStatus('Alex bol raha hai...');
+    await getTalkResponse();
+}
+
+function resetTalk() {
+    talkHistory = [];
+    talkStarted = false;
+    document.getElementById('talk-messages').innerHTML = '';
+    document.getElementById('talk-error').textContent = '';
+    initTalk();
+}
+
+async function toggleTalkRecording() {
+    if (talkRecording) {
+        stopTalkRecording();
+    } else {
+        await startTalkRecording();
+    }
+}
+
+async function startTalkRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        talkChunks = [];
+        const mime = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+        talkRecorder = new MediaRecorder(stream, { mimeType: mime });
+        talkRecorder.ondataavailable = e => { if (e.data.size > 0) talkChunks.push(e.data); };
+        talkRecorder.onstop = async () => {
+            stream.getTracks().forEach(t => t.stop());
+            await processTalkAudio(new Blob(talkChunks, { type: mime }), mime);
+        };
+        talkRecorder.start();
+        talkRecording = true;
+        const btn = document.getElementById('talk-mic-btn');
+        btn.classList.add('recording');
+        btn.textContent = '⏹️';
+        setTalkStatus('Bol rahe hain... rokne ke liye dobara dabao');
+        document.getElementById('talk-error').textContent = '';
+    } catch (e) {
+        document.getElementById('talk-error').textContent = '⚠️ Microphone allow karein.';
+    }
+}
+
+function stopTalkRecording() {
+    if (talkRecorder && talkRecorder.state !== 'inactive') talkRecorder.stop();
+    talkRecording = false;
+    const btn = document.getElementById('talk-mic-btn');
+    btn.classList.remove('recording');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+    setTalkStatus('Alex sun raha hai...');
+}
+
+async function processTalkAudio(blob, mime) {
+    const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+    const fd = new FormData();
+    fd.append('audio', blob, `talk.${ext}`);
+    try {
+        const tRes = await fetch('/api/voice/transcribe', { method: 'POST', body: fd });
+        const tData = await tRes.json();
+        if (tData.error) throw new Error(tData.error);
+
+        const userText = tData.text;
+        addTalkBubble('user', userText);
+        talkHistory.push({ role: 'user', content: userText });
+
+        setTalkStatus('Alex soch raha hai...');
+        await getTalkResponse();
+    } catch (e) {
+        document.getElementById('talk-error').textContent = '⚠️ ' + (e.message || 'Kuch masla hua.');
+    } finally {
+        const btn = document.getElementById('talk-mic-btn');
+        btn.textContent = '🎤';
+        btn.disabled = false;
+        setTalkStatus('Button dabao aur bolein');
+    }
+}
+
+async function getTalkResponse() {
+    try {
+        const res = await fetch('/api/talk', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ history: talkHistory })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        const aiText = data.response;
+        talkHistory.push({ role: 'assistant', content: aiText });
+
+        const sRes = await fetch('/api/voice/speak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: aiText })
+        });
+        let audioUrl = null;
+        if (sRes.ok) {
+            audioUrl = URL.createObjectURL(await sRes.blob());
+            new Audio(audioUrl).play();
+        }
+        addTalkBubble('ai', aiText, audioUrl);
+    } catch (e) {
+        document.getElementById('talk-error').textContent = '⚠️ ' + e.message;
+    }
+}
+
+function addTalkBubble(role, text, audioUrl = null) {
+    const container = document.getElementById('talk-messages');
+    const isUser = role === 'user';
+    const div = document.createElement('div');
+    div.className = 'msg ' + (isUser ? 'user' : 'ai');
+
+    const replayHtml = audioUrl
+        ? `<button onclick="new Audio('${audioUrl}').play()"
+            style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--text-muted);padding:2px 0;display:block;font-family:'JetBrains Mono',monospace;">
+            🔊 replay</button>`
+        : '';
+
+    div.innerHTML = `<div class="bubble">${text}</div>${replayHtml}`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function setTalkStatus(msg) {
+    document.getElementById('talk-status').textContent = msg;
+}
+
+// ── KAISE KAHEIN ───────────────────────────────────────────────────────────
+async function askHowToSay() {
+    const input = document.getElementById('hts-input').value.trim();
+    if (!input) return;
+
+    const btn = document.getElementById('hts-btn');
+    const err = document.getElementById('hts-error');
+    err.textContent = '';
+    btn.disabled = true;
+    btn.innerHTML = '< <span class="loader"></span> Soch raha hoon... />';
+    document.getElementById('hts-result').style.display = 'none';
+
+    try {
+        const res = await fetch('/api/how-to-say', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: input })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        renderHowToSay(data);
+    } catch (e) {
+        err.textContent = '⚠️ ' + (e.message || 'Kuch masla hua. Dobara koshish karein.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'ask_how_to_say()';
+    }
+}
+
+function renderHowToSay(data) {
+    document.getElementById('hts-phrase').textContent = data.english_phrase || '—';
+    document.getElementById('hts-pronunciation').textContent = data.pronunciation_tip
+        ? '🔊 ' + data.pronunciation_tip : '';
+
+    const altContainer = document.getElementById('hts-alternatives');
+    const alts = data.alternatives || [];
+    if (alts.length > 0) {
+        altContainer.innerHTML = alts.map(a =>
+            `<div style="padding:10px 14px; border-left:3px solid var(--primary-light);
+                background:var(--surface-2); border-radius:0 8px 8px 0; margin-bottom:8px;
+                font-size:0.95rem; font-weight:500;">${a}</div>`
+        ).join('');
+        document.getElementById('hts-alt-card').style.display = 'block';
+    } else {
+        document.getElementById('hts-alt-card').style.display = 'none';
+    }
+
+    document.getElementById('hts-grammar').textContent = data.grammar_note || '';
+    document.getElementById('hts-urdu-tip').textContent = data.urdu_tip ? '💡 ' + data.urdu_tip : '';
+
+    const convo = document.getElementById('hts-conversation');
+    convo.innerHTML = (data.example_conversation || []).map(line => {
+        const isUser = line.speaker && line.speaker.toLowerCase().includes('you');
+        return `
+            <div style="display:flex; flex-direction:column; align-items:${isUser ? 'flex-end' : 'flex-start'};">
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:3px;">${line.speaker || ''}</div>
+                <div style="padding:10px 14px; border-radius:14px; max-width:80%; font-size:0.92rem; line-height:1.5;
+                    background:${isUser ? 'var(--accent)' : 'var(--surface)'};
+                    color:${isUser ? 'var(--bg)' : 'var(--text)'};
+                    border:1px solid var(--border);
+                    ${isUser ? 'border-bottom-right-radius:4px' : 'border-bottom-left-radius:4px'}">
+                    ${line.line || ''}
+                </div>
+            </div>`;
+    }).join('');
+
+    document.getElementById('hts-result').style.display = 'block';
+    document.getElementById('hts-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
