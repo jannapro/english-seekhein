@@ -16,45 +16,46 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root, [data-theme="dark"] {
-            --bg: #050C08;
-            --bg-2: #091510;
-            --surface: #0D1E14;
-            --surface-2: #142B1C;
-            --border: rgba(74,222,128,0.14);
-            --accent: #4ADE80;
-            --accent-2: #86EFAC;
-            --text: #E8F5EE;
-            --text-muted: #6B9A7E;
-            --sidebar-bg: #050C08;
-            --header-bg: #050C08;
-            --success: #4ADE80;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --primary: #4ADE80;
-            --primary-light: #86EFAC;
-            --secondary: #86EFAC;
-            --card: var(--surface);
+        /* ── TOKENS ── */
+        :root {
+            --bg:      #020805;
+            --bg2:     #060D0A;
+            --bg3:     #0A1A10;
+            --bg4:     #0D1E14;
+            --bg5:     #142B1C;
+            --lime:    #4ADE80;
+            --lime2:   #86EFAC;
+            --lime3:   #BBF7D0;
+            --sage:    #6B9A7E;
+            --chalk:   #E8F5EE;
+            --border:  rgba(74,222,128,0.12);
+            --border2: rgba(74,222,128,0.25);
+            --glow:    rgba(74,222,128,0.08);
+            /* legacy aliases */
+            --surface: var(--bg3); --surface-2: var(--bg4); --accent: var(--lime);
+            --accent-2: var(--lime2); --text: var(--chalk); --text-muted: var(--sage);
+            --success: var(--lime); --danger: #ef4444; --warning: #f59e0b;
+            --primary: var(--lime); --secondary: var(--lime2);
         }
         [data-theme="light"] {
-            --bg: #f0faf3;
-            --surface: #ffffff;
-            --surface-2: #e6f4ec;
-            --border: rgba(22,163,74,0.18);
-            --accent: #16a34a;
-            --accent-2: #22c55e;
-            --text: #0a1f0f;
-            --text-muted: #4a7a5a;
-            --sidebar-bg: #e6f4ec;
-            --header-bg: #ffffff;
-            --success: #16a34a;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --primary: #16a34a;
-            --primary-light: #22c55e;
-            --secondary: #22c55e;
-            --card: #ffffff;
+            --bg: #F0F7F2; --bg2: #E8F2EC; --bg3: #FFFFFF; --bg4: #F5FAF6; --bg5: #EAF4EE;
+            --chalk: #0A1A10; --sage: #4A7A5A;
+            --border: rgba(22,163,74,0.14); --border2: rgba(22,163,74,0.28); --glow: rgba(22,163,74,0.07);
+            --lime: #16a34a; --lime2: #22c55e; --lime3: #4ade80;
+            --surface: var(--bg3); --surface-2: var(--bg4); --accent: var(--lime);
+            --accent-2: var(--lime2); --text: var(--chalk); --text-muted: var(--sage);
         }
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme="dark"]) {
+                --bg: #F0F7F2; --bg2: #E8F2EC; --bg3: #FFFFFF; --bg4: #F5FAF6; --bg5: #EAF4EE;
+                --chalk: #0A1A10; --sage: #4A7A5A;
+                --border: rgba(22,163,74,0.14); --border2: rgba(22,163,74,0.28); --glow: rgba(22,163,74,0.07);
+                --lime: #16a34a; --lime2: #22c55e; --lime3: #4ade80;
+                --surface: var(--bg3); --surface-2: var(--bg4); --accent: var(--lime);
+                --accent-2: var(--lime2); --text: var(--chalk); --text-muted: var(--sage);
+            }
+        }
+
 
         body {
             font-family: 'Syne', sans-serif;
@@ -65,17 +66,17 @@
 
         /* ── Header ── */
         .app-header {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: 52px; z-index: 100;
-            background: rgba(5,12,8,0.85);
+            position: fixed; top: 0; left: 220px; right: 0;
+            height: 44px; z-index: 100;
+            background: var(--bg2);
             border-bottom: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px 0 calc(228px + 20px);
+            padding: 0 20px;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            transition: padding 0.25s ease;
+            transition: left 0.25s ease;
         }
-        body.sidebar-collapsed .app-header { padding-left: calc(64px + 20px); }
+        body.sidebar-collapsed .app-header { left: 64px; }
         .header-left { display: flex; align-items: center; gap: 16px; }
         .header-right { display: flex; align-items: center; gap: 10px; position: relative; }
 
@@ -124,9 +125,9 @@
 
         /* ── Sidebar ── */
         .sidebar {
-            position: fixed; top: 52px; left: 0;
-            width: 228px; height: calc(100vh - 52px);
-            background: #060D0A;
+            position: fixed; top: 0; left: 0;
+            width: 220px; height: 100vh;
+            background: var(--bg2);
             border-right: 1px solid var(--border);
             z-index: 90; overflow: hidden;
             transition: width 0.25s ease;
@@ -159,8 +160,8 @@
         }
         .nav-item:hover { color: var(--text); background: rgba(74,222,128,0.04); }
         .nav-item.active {
-            color: var(--accent); border-left-color: var(--accent);
-            background: rgba(74,222,128,0.07);
+            color: var(--lime2); border-left-color: var(--lime);
+            background: var(--glow);
         }
         [data-theme="light"] .nav-item.active { background: rgba(22,163,74,0.08); }
 
@@ -171,42 +172,21 @@
 
         /* ── Sidebar brand ── */
         .sidebar-brand {
-            padding: 22px 20px 14px;
+            padding: 20px 20px 14px;
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
         }
-        .sidebar.collapsed .sidebar-brand { padding: 16px; }
-        .sidebar-logo-text {
-            font-family: 'Instrument Serif', serif;
-            font-size: 1.9rem;
-            color: var(--text);
-            letter-spacing: -0.01em;
-            display: block;
-            line-height: 1;
-        }
-        .sidebar-logo-text em {
-            font-style: italic;
-            color: var(--accent);
-        }
+        .sidebar.collapsed .sidebar-brand { padding: 16px; align-items: center; }
         .sidebar-logo-sub {
             font-family: 'Syne', sans-serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.22em;
-            color: var(--text-muted);
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            color: var(--sage);
             text-transform: uppercase;
             display: block;
-            margin-top: 5px;
         }
-        .sidebar.collapsed .sidebar-logo-text,
         .sidebar.collapsed .sidebar-logo-sub { display: none; }
-        .sidebar.collapsed .sidebar-brand::after {
-            content: 'L';
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            color: var(--accent);
-            font-size: 1.4rem;
-            display: block;
-        }
 
         /* Tooltip on collapsed */
         .sidebar.collapsed .nav-item::after {
@@ -222,36 +202,45 @@
 
         /* ── Main content ── */
         .main-content {
-            margin-left: 228px;
-            padding: 80px 32px 32px;
+            margin-left: 220px;
+            padding: 72px 28px 28px;
             min-height: 100vh;
             transition: margin-left 0.25s ease;
         }
         body.sidebar-collapsed .main-content { margin-left: 64px; }
-        .main-content::before {
-            content: '';
-            position: fixed;
-            top: 30%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(74,222,128,0.025) 0%, transparent 65%);
-            pointer-events: none; z-index: -1;
-            animation: bgDrift 20s ease-in-out infinite;
+        /* ── Background blobs ── */
+        .bg-blob {
+            position: fixed; border-radius: 50%;
+            pointer-events: none; z-index: 0;
+            animation: float 18s ease-in-out infinite;
         }
-        @keyframes bgDrift {
-            0%, 100% { transform: translate(-50%, -50%); }
-            50%       { transform: translate(-45%, -55%); }
+        .bg-blob-1 {
+            width: 500px; height: 500px;
+            top: 10%; left: 30%;
+            background: radial-gradient(circle, rgba(14,40,24,0.6) 0%, transparent 70%);
+            animation-delay: 0s;
+        }
+        .bg-blob-2 {
+            width: 400px; height: 400px;
+            bottom: 15%; right: 15%;
+            background: radial-gradient(circle, rgba(14,40,24,0.5) 0%, transparent 70%);
+            animation-delay: -9s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0,0); }
+            33%       { transform: translate(20px,-20px); }
+            66%       { transform: translate(-15px,15px); }
         }
 
         .page-header { margin-bottom: 28px; }
         .page-title {
             font-family: 'Instrument Serif', serif;
-            font-size: 2rem; font-weight: 400;
-            color: var(--text); margin-bottom: 4px;
+            font-size: 2.125rem; font-weight: 400;
+            color: var(--chalk); margin-bottom: 4px;
             letter-spacing: -0.01em;
         }
         .breadcrumb {
-            font-size: 0.72rem; color: var(--text-muted);
+            font-size: 0.72rem; color: var(--sage);
             letter-spacing: 0.06em; font-family: 'Syne', sans-serif;
             text-transform: uppercase;
         }
@@ -642,10 +631,10 @@
         /* ── Responsive ── */
         @media (max-width: 768px) {
             .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 80px 16px 90px; }
+            .main-content { margin-left: 0; padding: 64px 16px 90px; }
             .mobile-nav {
                 display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
-                background: var(--sidebar-bg); border-top: 1px solid var(--border);
+                background: var(--bg2); border-top: 1px solid var(--border);
                 padding: 8px 4px; justify-content: space-around;
             }
             .mobile-nav-item {
@@ -662,6 +651,8 @@
     </style>
 </head>
 <body>
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
 
 <!-- ── HEADER ── -->
 <header class="app-header">
@@ -693,8 +684,12 @@
 <!-- ── SIDEBAR ── -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <span class="sidebar-logo-text">Laf<em>z</em></span>
-        <span class="sidebar-logo-sub">AI · English · Urdu</span>
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="19" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
+            <path d="M20 8 L30 26 L20 22 L10 26 Z" fill="#4ADE80" opacity="0.9"/>
+            <circle cx="20" cy="18" r="3" fill="#86EFAC"/>
+        </svg>
+        <span class="sidebar-logo-sub">AI · ENGLISH · URDU</span>
     </div>
     <div class="sidebar-nav">
         <div class="nav-top">
@@ -833,19 +828,11 @@
 
     <!-- VOCABULARY TAB -->
     <div id="tab-vocabulary" class="tab-content active">
-        <div class="terminal-card">
-            <div class="terminal-titlebar">
-                <span class="t-dot red"></span>
-                <span class="t-dot yellow"></span>
-                <span class="t-dot green"></span>
-                <span class="terminal-filename">word_of_the_day.js</span>
-            </div>
-            <div class="terminal-body">
-                <h2 class="card-title">⭐ Word of the Day <span class="card-title-sub">— Aaj Ka Lafz</span></h2>
-                <p class="card-desc">Roz naaya lafz seekhein — Learn a new word every day</p>
-                <button class="btn btn-primary" onclick="loadDailyWord()" id="daily-btn">Get Word</button>
-                <div id="word-error" class="error-msg"></div>
-            </div>
+        <div class="card">
+            <h2 class="card-title">Word of the Day <span class="card-title-sub">— Aaj Ka Lafz</span></h2>
+            <p class="card-desc">Roz naaya lafz seekhein — Learn a new word every day</p>
+            <button class="btn btn-primary" onclick="loadDailyWord()" id="daily-btn">Get Word</button>
+            <div id="word-error" class="error-msg"></div>
         </div>
 
         <div id="word-display" class="word-display">
@@ -877,26 +864,18 @@
 
     <!-- GRAMMAR TAB -->
     <div id="tab-grammar" class="tab-content">
-        <div class="terminal-card">
-            <div class="terminal-titlebar">
-                <span class="t-dot red"></span>
-                <span class="t-dot yellow"></span>
-                <span class="t-dot green"></span>
-                <span class="terminal-filename">grammar.js</span>
+        <div class="card">
+            <h2 class="card-title">Grammar Lesson <span class="card-title-sub">— Grammar Sabaq</span></h2>
+            <div class="input-row" style="flex-direction:column; gap:10px;">
+                <select id="grammar-select">
+                    <option value="">— Choose a grammar topic —</option>
+                    {% for topic in grammar_topics %}
+                    <option value="{{ topic }}">{{ topic }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-primary" onclick="loadGrammar()" id="grammar-btn">Load Lesson</button>
             </div>
-            <div class="terminal-body">
-                <h2 class="card-title">✏️ Grammar Lesson <span class="card-title-sub">— Grammar Sabaq</span></h2>
-                <div class="input-row" style="flex-direction:column; gap:10px;">
-                    <select id="grammar-select">
-                        <option value="">— Choose a grammar topic —</option>
-                        {% for topic in grammar_topics %}
-                        <option value="{{ topic }}">{{ topic }}</option>
-                        {% endfor %}
-                    </select>
-                    <button class="btn btn-primary" onclick="loadGrammar()" id="grammar-btn">Load Lesson</button>
-                </div>
-                <div id="grammar-error" class="error-msg"></div>
-            </div>
+            <div id="grammar-error" class="error-msg"></div>
         </div>
 
         <div id="grammar-section" class="grammar-section">
@@ -924,35 +903,27 @@
 
     <!-- QUIZ TAB -->
     <div id="tab-quiz" class="tab-content">
-        <div class="terminal-card">
-            <div class="terminal-titlebar">
-                <span class="t-dot red"></span>
-                <span class="t-dot yellow"></span>
-                <span class="t-dot green"></span>
-                <span class="terminal-filename">quiz.js</span>
+        <div class="card">
+            <h2 class="card-title">English Quiz</h2>
+            <div class="section-label">Topic — Mauzu</div>
+            <select id="quiz-topic" style="margin-bottom:12px;">
+                <option value="General English">General English</option>
+                <option value="Vocabulary">Vocabulary</option>
+                <option value="Grammar">Grammar</option>
+                <option value="Tenses">Tenses</option>
+                <option value="Prepositions">Prepositions</option>
+                <option value="Articles">Articles (a, an, the)</option>
+                <option value="Spelling">Spelling</option>
+                <option value="Idioms">Common Idioms</option>
+            </select>
+            <div class="section-label">Difficulty — Mushkil Darjah</div>
+            <div class="diff-row">
+                <button class="diff-btn active" onclick="setDiff('beginner', this)">Beginner</button>
+                <button class="diff-btn" onclick="setDiff('intermediate', this)">Intermediate</button>
+                <button class="diff-btn" onclick="setDiff('advanced', this)">Advanced</button>
             </div>
-            <div class="terminal-body">
-                <h2 class="card-title">🎯 English Quiz</h2>
-                <div class="section-label">Topic — Mauzu</div>
-                <select id="quiz-topic" style="margin-bottom:12px;">
-                    <option value="General English">General English</option>
-                    <option value="Vocabulary">Vocabulary</option>
-                    <option value="Grammar">Grammar</option>
-                    <option value="Tenses">Tenses</option>
-                    <option value="Prepositions">Prepositions</option>
-                    <option value="Articles">Articles (a, an, the)</option>
-                    <option value="Spelling">Spelling</option>
-                    <option value="Idioms">Common Idioms</option>
-                </select>
-                <div class="section-label">Difficulty — Mushkil Darjah</div>
-                <div class="diff-row">
-                    <button class="diff-btn active" onclick="setDiff('beginner', this)">🟢 Beginner</button>
-                    <button class="diff-btn" onclick="setDiff('intermediate', this)">🟡 Intermediate</button>
-                    <button class="diff-btn" onclick="setDiff('advanced', this)">🔴 Advanced</button>
-                </div>
-                <button class="btn btn-primary" onclick="startQuiz()" id="quiz-start-btn" style="width:100%; justify-content:center;">Start Quiz</button>
-                <div id="quiz-error" class="error-msg"></div>
-            </div>
+            <button class="btn btn-primary" onclick="startQuiz()" id="quiz-start-btn" style="width:100%; justify-content:center;">Start Quiz</button>
+            <div id="quiz-error" class="error-msg"></div>
         </div>
 
         <div id="quiz-section" class="quiz-section">
@@ -984,10 +955,6 @@
 
     <!-- CHAT TAB -->
     <div id="tab-chat" class="tab-content">
-        <div class="page-header">
-            <h1 class="page-title" style="font-size:2rem;">Practice</h1>
-            <div class="breadcrumb">AI teacher se English bolna seekhein</div>
-        </div>
         <div class="chat-starters" id="starters" style="padding: 0 0 16px 0; display:flex; flex-wrap:wrap; gap:8px;">
             <button class="starter-btn" onclick="useStarter(this)">Introduce yourself</button>
             <button class="starter-btn" onclick="useStarter(this)">Talk about hobbies</button>
