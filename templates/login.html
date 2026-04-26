@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Seekhein — Login</title>
+    <title>Lafz</title>
     <script>
         (function() {
-            const saved = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', saved);
+            const saved = localStorage.getItem('theme');
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            }
         })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root, [data-theme="dark"] {
-            --bg: #0a0a0f;
-            --surface: #111118;
-            --surface-2: #1a1a2e;
-            --border: #1e1e2e;
-            --accent: #00ffe0;
-            --accent-2: #7c3aed;
-            --text: #e2e8f0;
-            --text-muted: #64748b;
-            --header-bg: #0a0a0f;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --primary: #7c3aed;
-            --primary-light: #8b5cf6;
-            --secondary: #06b6d4;
+            --bg:         #050C08;
+            --surface:    #0D1E14;
+            --surface-2:  #142B1C;
+            --input-bg:   #0B1810;
+            --border:     rgba(74,222,128,0.15);
+            --border-card:rgba(74,222,128,0.20);
+            --accent:     #4ADE80;
+            --accent-dim: rgba(74,222,128,0.25);
+            --text:       #E8F5EE;
+            --text-muted: #6B9A7E;
+            --danger:     #ef4444;
+            --warning:    #f59e0b;
+            --success:    #4ADE80;
         }
         [data-theme="light"] {
-            --bg: #f0f4ff;
-            --surface: #ffffff;
-            --surface-2: #e8edf8;
-            --border: #dde3f0;
-            --accent: #6d28d9;
-            --accent-2: #0891b2;
-            --text: #0f172a;
-            --text-muted: #475569;
-            --header-bg: #ffffff;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --primary: #6d28d9;
-            --primary-light: #7c3aed;
-            --secondary: #0891b2;
+            --bg:         #F0F7F2;
+            --surface:    #ffffff;
+            --surface-2:  #e6f4ec;
+            --input-bg:   #f5fbf7;
+            --border:     rgba(22,163,74,0.18);
+            --border-card:rgba(22,163,74,0.25);
+            --accent:     #16a34a;
+            --accent-dim: rgba(22,163,74,0.15);
+            --text:       #0a1f0f;
+            --text-muted: #4a7a5a;
+            --danger:     #dc2626;
+            --warning:    #d97706;
+            --success:    #16a34a;
         }
 
         body {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
@@ -60,106 +61,175 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 24px 16px;
+            padding: 32px 16px;
+            position: relative;
+            overflow-x: hidden;
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* ── Theme toggle (fixed top-right) ── */
+        /* ── Animated background ── */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+        }
+        [data-theme="dark"] .blob-1 {
+            width: 560px; height: 560px;
+            background: radial-gradient(circle, #0D1E14 0%, transparent 65%);
+            top: -140px; left: -120px;
+            animation: driftA 22s ease-in-out infinite;
+        }
+        [data-theme="dark"] .blob-2 {
+            width: 440px; height: 440px;
+            background: radial-gradient(circle, #091510 0%, transparent 65%);
+            bottom: -80px; right: -80px;
+            animation: driftB 28s ease-in-out infinite;
+        }
+        [data-theme="dark"] .blob-3 {
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, #142B1C 0%, transparent 65%);
+            top: 40%; left: 55%;
+            animation: driftC 34s ease-in-out infinite;
+        }
+        [data-theme="light"] .blob-1 {
+            width: 560px; height: 560px;
+            background: radial-gradient(circle, rgba(22,163,74,0.06) 0%, transparent 65%);
+            top: -140px; left: -120px;
+            animation: driftA 22s ease-in-out infinite;
+        }
+        [data-theme="light"] .blob-2 {
+            width: 440px; height: 440px;
+            background: radial-gradient(circle, rgba(22,163,74,0.04) 0%, transparent 65%);
+            bottom: -80px; right: -80px;
+            animation: driftB 28s ease-in-out infinite;
+        }
+        [data-theme="light"] .blob-3 {
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, rgba(22,163,74,0.05) 0%, transparent 65%);
+            top: 40%; left: 55%;
+            animation: driftC 34s ease-in-out infinite;
+        }
+        @keyframes driftA {
+            0%, 100% { transform: translate(0, 0); }
+            33%       { transform: translate(70px, 50px); }
+            66%       { transform: translate(-40px, 80px); }
+        }
+        @keyframes driftB {
+            0%, 100% { transform: translate(0, 0); }
+            33%       { transform: translate(-60px, -40px); }
+            66%       { transform: translate(50px, -70px); }
+        }
+        @keyframes driftC {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-90px, 60px); }
+        }
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(74,222,128,0.025) 0px,
+                rgba(74,222,128,0.025) 1px,
+                transparent 1px,
+                transparent 28px
+            );
+        }
+        [data-theme="light"] .grid-overlay {
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(22,163,74,0.05) 0px,
+                rgba(22,163,74,0.05) 1px,
+                transparent 1px,
+                transparent 28px
+            );
+        }
+
+        /* ── Z-layer ── */
+        .login-wrapper { position: relative; z-index: 1; width: 100%; max-width: 400px; }
+
+        /* ── Theme toggle ── */
         .theme-toggle-btn {
-            position: fixed; top: 16px; right: 16px;
+            position: fixed; top: 18px; right: 18px; z-index: 100;
             background: var(--surface); border: 1px solid var(--border);
             color: var(--text-muted); border-radius: 8px;
             width: 38px; height: 38px; cursor: pointer;
             font-size: 1rem; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; z-index: 100;
+            transition: all 0.2s;
         }
         .theme-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* ── Hero title ── */
-        .hero {
-            text-align: center;
-            margin-bottom: 36px;
+        /* ── Brand ── */
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 32px;
         }
-        .hero-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
-        .hero-title {
-            font-family: 'Cinzel Decorative', serif;
-            font-size: 2rem; font-weight: 700;
+        .logo-mark { flex-shrink: 0; }
+        .app-name {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 2.6rem;
             color: var(--accent);
-            text-shadow: 0 0 30px var(--accent), 0 0 60px rgba(0,255,224,0.2);
-            margin-bottom: 10px;
-            line-height: 1.2;
+            line-height: 1;
+            letter-spacing: -0.01em;
         }
-        [data-theme="light"] .hero-title {
-            text-shadow: 0 0 20px rgba(109,40,217,0.3);
-        }
-        .hero-subtitle {
-            font-size: 0.85rem;
+        .app-tagline {
+            font-size: 0.82rem;
             color: var(--text-muted);
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
+            margin-top: -8px;
         }
 
         /* ── Auth card ── */
         .auth-card {
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
             width: 100%;
-            max-width: 420px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            transition: border-color 0.2s;
-        }
-        .auth-card:hover { border-color: var(--accent); }
-
-        /* ── Terminal titlebar ── */
-        .terminal-titlebar {
-            background: var(--surface-2);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 16px;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .t-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-        .t-dot.red { background: #ff5f57; }
-        .t-dot.yellow { background: #febc2e; }
-        .t-dot.green { background: #28c840; }
-        .terminal-filename {
-            margin-left: 8px; font-size: 0.75rem;
-            color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+            padding: 32px;
         }
 
-        .card-body { padding: 28px; }
-
-        /* ── Mode toggle tabs ── */
+        /* ── Mode toggle pills ── */
         .mode-toggle {
             display: flex;
-            background: var(--surface-2);
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 24px;
-            gap: 4px;
+            gap: 5px;
+            background: rgba(74,222,128,0.05);
             border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+        [data-theme="light"] .mode-toggle {
+            background: rgba(22,163,74,0.05);
         }
         .mode-btn {
             flex: 1;
-            padding: 10px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 0.82rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
             font-weight: 600;
             background: transparent;
             color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
             transition: all 0.2s;
         }
         .mode-btn.active {
-            background: var(--surface);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 10px rgba(0,255,224,0.1);
+            background: var(--accent);
+            color: #050C08;
         }
         [data-theme="light"] .mode-btn.active {
-            box-shadow: 0 0 10px rgba(109,40,217,0.1);
+            color: #ffffff;
         }
 
         .form-section { display: none; }
@@ -168,271 +238,267 @@
         /* ── Form labels ── */
         .form-label {
             display: block;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             font-weight: 700;
+            font-family: 'Syne', sans-serif;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 6px;
-            margin-top: 18px;
+            letter-spacing: 0.12em;
+            margin-bottom: 7px;
+            margin-top: 20px;
         }
         .form-label:first-of-type { margin-top: 0; }
 
         /* ── Inputs ── */
         input[type="text"] {
             width: 100%;
-            padding: 11px 14px;
-            background: var(--surface-2);
+            padding: 12px 14px;
+            background: var(--input-bg);
             color: var(--text);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.9rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         input[type="text"]:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.08);
+            border-color: rgba(74,222,128,0.5);
+            box-shadow: 0 0 0 3px rgba(74,222,128,0.12);
         }
         [data-theme="light"] input[type="text"]:focus {
-            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
+            border-color: rgba(22,163,74,0.5);
+            box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
         }
-        input[type="text"]::placeholder { color: var(--text-muted); }
+        input[type="text"]::placeholder { color: var(--text-muted); opacity: 0.6; }
 
-        /* ── CTA Button ── */
+        /* ── CTA button ── */
         .btn-cta {
             width: 100%;
-            padding: 13px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
             font-weight: 700;
+            background: var(--accent);
+            color: #050C08;
             margin-top: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s;
-            background: linear-gradient(135deg, var(--accent-2), var(--accent));
-            color: var(--bg);
-            position: relative;
-            overflow: hidden;
+            transition: opacity 0.2s, transform 0.15s;
         }
-        .btn-cta::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: rgba(255,255,255,0.1);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .btn-cta:hover::before { opacity: 1; }
-        .btn-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,255,224,0.25); }
-        [data-theme="light"] .btn-cta { color: white; }
-        [data-theme="light"] .btn-cta:hover { box-shadow: 0 4px 20px rgba(109,40,217,0.3); }
-        .btn-cta:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        [data-theme="light"] .btn-cta { color: #ffffff; }
 
         /* ── Loader ── */
         .loader {
-            width: 16px; height: 16px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-top-color: white;
+            width: 15px; height: 15px;
+            border: 2px solid rgba(5,12,8,0.3);
+            border-top-color: #050C08;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
             display: inline-block;
         }
+        [data-theme="light"] .loader {
+            border-color: rgba(255,255,255,0.3);
+            border-top-color: white;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── Error message ── */
+        /* ── Error ── */
         .error-msg {
             color: var(--danger);
             font-size: 0.82rem;
             margin-top: 10px;
             padding: 10px 14px;
-            background: rgba(239,68,68,0.1);
+            background: rgba(239,68,68,0.08);
             border-radius: 8px;
             border-left: 3px solid var(--danger);
             display: none;
         }
         .error-msg.show { display: block; }
 
-        /* ── Code reveal box ── */
+        /* ── Code box ── */
         .code-box {
             display: none;
             margin-top: 20px;
-            background: rgba(16,185,129,0.08);
-            border: 1px solid rgba(16,185,129,0.3);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
             animation: fadeInUp 0.4s ease;
         }
         .code-box.show { display: block; }
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-
-        .code-box .welcome {
-            font-size: 0.88rem; color: var(--success); margin-bottom: 8px; font-weight: 600;
+        .code-welcome {
+            font-size: 0.85rem;
+            color: var(--success);
+            font-weight: 600;
+            margin-bottom: 10px;
         }
-        .code-box .warning {
-            font-size: 0.78rem; color: var(--warning);
-            background: rgba(245,158,11,0.1); border-radius: 6px;
-            padding: 8px 12px; margin-bottom: 14px;
-            border-left: 3px solid var(--warning);
-            text-align: left;
+        .code-warning {
+            font-size: 0.78rem;
+            color: var(--warning);
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 8px;
+            padding: 9px 13px;
+            margin-bottom: 14px;
+            line-height: 1.5;
         }
-
         .code-display {
-            font-size: 1.6rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 700;
             letter-spacing: 4px;
             color: var(--accent);
-            background: var(--surface-2);
-            border: 1px dashed var(--accent);
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin: 10px 0;
-            font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 0 20px var(--accent);
+            background: rgba(74,222,128,0.04);
+            border: 1px dashed rgba(74,222,128,0.4);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 4px 0 12px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
         }
         [data-theme="light"] .code-display {
-            text-shadow: none;
+            background: rgba(22,163,74,0.04);
+            border-color: rgba(22,163,74,0.35);
         }
-
         .copy-btn {
-            background: var(--surface-2);
+            background: transparent;
             color: var(--accent);
             border: 1px solid var(--accent);
-            border-radius: 6px;
-            padding: 7px 18px;
+            border-radius: 8px;
+            padding: 8px 18px;
             font-size: 0.82rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s;
+            font-family: 'Syne', sans-serif;
+            transition: background 0.2s;
         }
-        .copy-btn:hover {
-            background: rgba(0,255,224,0.08);
-            box-shadow: 0 0 10px rgba(0,255,224,0.2);
-        }
-        [data-theme="light"] .copy-btn:hover {
-            background: rgba(109,40,217,0.08);
-            box-shadow: 0 0 10px rgba(109,40,217,0.2);
-        }
-
+        .copy-btn:hover { background: var(--accent-dim); }
         .go-btn {
             width: 100%;
             padding: 13px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
+            font-family: 'Syne', sans-serif;
             font-size: 0.9rem;
             font-weight: 700;
-            margin-top: 14px;
-            background: linear-gradient(135deg, var(--success), #059669);
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s;
+            margin-top: 10px;
+            background: var(--accent);
+            color: #050C08;
+            transition: opacity 0.2s, transform 0.15s;
         }
-        .go-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.35); }
+        .go-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+        [data-theme="light"] .go-btn { color: #ffffff; }
 
         .divider {
             text-align: center;
             font-size: 0.78rem;
             color: var(--text-muted);
             margin: 16px 0 0;
-            letter-spacing: 0.02em;
         }
 
-        /* ── Footer note ── */
+        /* ── Footer ── */
         .footer-note {
             margin-top: 24px;
             font-size: 0.75rem;
             color: var(--text-muted);
             text-align: center;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.03em;
         }
     </style>
 </head>
 <body>
 
-
-<!-- Fixed theme toggle -->
-<button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark/light mode">🌙</button>
-
-<!-- Hero title -->
-<div class="hero">
-    <span class="hero-icon">📚</span>
-    <h1 class="hero-title">English Seekhein</h1>
-    <p class="hero-subtitle">// AI se English seekhein — Learn English with AI</p>
+<!-- Animated background -->
+<div class="bg-canvas">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="grid-overlay"></div>
 </div>
 
-<!-- Auth card -->
-<div class="auth-card">
-    <div class="terminal-titlebar">
-        <span class="t-dot red"></span>
-        <span class="t-dot yellow"></span>
-        <span class="t-dot green"></span>
-        <span class="terminal-filename">auth.js</span>
+<!-- Theme toggle -->
+<button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</button>
+
+<div class="login-wrapper">
+
+    <!-- Brand -->
+    <div class="brand">
+        <svg class="logo-mark" width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="52" height="52" rx="12" fill="#0D1E14" stroke="rgba(74,222,128,0.35)" stroke-width="1"/>
+            <path d="M16 38 L26 18 L36 38" stroke="#4ADE80" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="26" cy="18" r="3" fill="#4ADE80"/>
+        </svg>
+        <h1 class="app-name">Lafz</h1>
+        <p class="app-tagline">AI se English seekhein</p>
     </div>
-    <div class="card-body">
+
+    <!-- Auth card -->
+    <div class="auth-card">
+
+        <!-- Mode toggle -->
         <div class="mode-toggle">
-            <button class="mode-btn active" onclick="switchMode('new')">✨ New User</button>
-            <button class="mode-btn" onclick="switchMode('returning')">🔑 I have an account</button>
+            <button class="mode-btn active" onclick="switchMode('new')">New User</button>
+            <button class="mode-btn" onclick="switchMode('returning')">Sign In</button>
         </div>
 
         <!-- NEW USER -->
         <div id="form-new" class="form-section active">
-            <label class="form-label">USERNAME ─ APNA NAAM</label>
+            <label class="form-label">Username — Apna Naam</label>
             <input type="text" id="reg-username" placeholder="e.g. Janna123" maxlength="30"
                 onkeydown="if(event.key==='Enter') doRegister()">
 
             <button class="btn-cta" onclick="doRegister()" id="reg-btn">
-                ✨ Create My Account
+                Create Account
             </button>
             <div class="error-msg" id="reg-error"></div>
 
             <div class="code-box" id="code-box">
-                <div class="welcome" id="code-welcome"></div>
-                <div class="warning">⚠️ Save this code — you will need it to login next time!</div>
+                <div class="code-welcome" id="code-welcome"></div>
+                <div class="code-warning">⚠️ Save this code — you will need it to sign in next time.</div>
                 <div class="code-display" id="code-display">----</div>
-                <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
-                <button class="go-btn" onclick="goToApp()">🚀 Start Learning!</button>
+                <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+                <button class="go-btn" onclick="goToApp()">Start Learning</button>
             </div>
         </div>
 
         <!-- RETURNING USER -->
         <div id="form-returning" class="form-section">
-            <label class="form-label">USERNAME</label>
+            <label class="form-label">Username</label>
             <input type="text" id="login-username" placeholder="Your username" maxlength="30"
                 onkeydown="if(event.key==='Enter') document.getElementById('login-code').focus()">
 
-            <label class="form-label" style="margin-top:14px;">UNIQUE CODE ─ APNA CODE LIKHEIN</label>
+            <label class="form-label" style="margin-top:18px;">Unique Code — Apna Code</label>
             <input type="text" id="login-code" placeholder="e.g. ABcd-EFgh-1234"
                 onkeydown="if(event.key==='Enter') doLogin()">
 
             <button class="btn-cta" onclick="doLogin()" id="login-btn">
-                🔑 Login
+                Sign In
             </button>
             <div class="error-msg" id="login-error"></div>
-            <div class="divider">Naya yahan? Switch to "New User" tab ↑</div>
+            <div class="divider">Naya yahan? Switch to "New User" above.</div>
         </div>
-    </div>
-</div>
 
-<div class="footer-note">// English Seekhein v2 — Powered by AI</div>
+    </div>
+
+    <div class="footer-note">Lafz · AI se seekhein</div>
+
+</div>
 
 <script>
 (function() {
-    const saved = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
+    const saved = localStorage.getItem('theme');
+    const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('theme-btn').textContent = saved === 'dark' ? '🌙' : '☀️';
+        document.getElementById('theme-btn').textContent = theme === 'dark' ? '🌙' : '☀️';
     });
 })();
 
@@ -479,7 +545,7 @@ async function doRegister() {
         errEl.textContent = '⚠️ ' + (e.message || 'Something went wrong.');
         errEl.classList.add('show');
         btn.disabled = false;
-        btn.innerHTML = '✨ Create My Account';
+        btn.innerHTML = 'Create Account';
     }
 }
 
@@ -487,8 +553,8 @@ function copyCode() {
     const code = document.getElementById('code-display').textContent;
     navigator.clipboard.writeText(code).then(() => {
         const btn = document.querySelector('.copy-btn');
-        btn.textContent = '✅ Copied!';
-        setTimeout(() => btn.textContent = '📋 Copy Code', 2000);
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = 'Copy Code', 2000);
     });
 }
 
@@ -504,7 +570,7 @@ async function doLogin() {
 
     errEl.classList.remove('show');
     btn.disabled = true;
-    btn.innerHTML = '<span class="loader"></span> Logging in...';
+    btn.innerHTML = '<span class="loader"></span> Signing in...';
 
     try {
         const res = await fetch('/api/auth/login', {
@@ -519,7 +585,7 @@ async function doLogin() {
         errEl.textContent = '⚠️ ' + (e.message || 'Login failed. Try again.');
         errEl.classList.add('show');
         btn.disabled = false;
-        btn.innerHTML = '🔑 Login';
+        btn.innerHTML = 'Sign In';
     }
 }
 </script>
