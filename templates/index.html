@@ -696,7 +696,7 @@
             <div class="terminal-body">
                 <h2 class="card-title">⭐ Word of the Day <span class="card-title-sub">— Aaj Ka Lafz</span></h2>
                 <p class="card-desc">Roz naaya lafz seekhein — Learn a new word every day</p>
-                <button class="btn-code" onclick="loadDailyWord()" id="daily-btn">get_word()</button>
+                <button class="btn btn-primary" onclick="loadDailyWord()" id="daily-btn">Get Word</button>
                 <div id="word-error" class="error-msg"></div>
             </div>
         </div>
@@ -746,7 +746,7 @@
                         <option value="{{ topic }}">{{ topic }}</option>
                         {% endfor %}
                     </select>
-                    <button class="btn-code" onclick="loadGrammar()" id="grammar-btn">load_lesson()</button>
+                    <button class="btn btn-primary" onclick="loadGrammar()" id="grammar-btn">Load Lesson</button>
                 </div>
                 <div id="grammar-error" class="error-msg"></div>
             </div>
@@ -803,7 +803,7 @@
                     <button class="diff-btn" onclick="setDiff('intermediate', this)">🟡 Intermediate</button>
                     <button class="diff-btn" onclick="setDiff('advanced', this)">🔴 Advanced</button>
                 </div>
-                <button class="btn-code" onclick="startQuiz()" id="quiz-start-btn" style="width:100%; justify-content:center;">start_quiz()</button>
+                <button class="btn btn-primary" onclick="startQuiz()" id="quiz-start-btn" style="width:100%; justify-content:center;">Start Quiz</button>
                 <div id="quiz-error" class="error-msg"></div>
             </div>
         </div>
@@ -1017,7 +1017,7 @@
                         rows="3"
                         onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); askHowToSay()}"
                     ></textarea>
-                    <button class="btn-code" onclick="askHowToSay()" id="hts-btn">ask_how_to_say()</button>
+                    <button class="btn btn-primary" onclick="askHowToSay()" id="hts-btn">Ask How to Say</button>
                 </div>
                 <div id="hts-error" class="error-msg"></div>
             </div>
@@ -1096,13 +1096,13 @@
                 <div class="section-label">Theme</div>
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
                     <span style="font-size:0.9rem;">Dark / Light mode</span>
-                    <button class="btn-code" onclick="toggleTheme()" id="settings-theme-btn">toggle_theme()</button>
+                    <button class="btn btn-secondary" onclick="toggleTheme()" id="settings-theme-btn">Toggle Theme</button>
                 </div>
                 <div class="section-label">Account</div>
                 <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                    <button class="btn-code" onclick="openModal('modal-username')">change_username()</button>
-                    <button class="btn-code" onclick="openModal('modal-progress')">view_progress()</button>
-                    <button class="btn-code" style="border-color:var(--danger); color:var(--danger);" onclick="openModal('modal-delete')">delete_account()</button>
+                    <button class="btn btn-secondary" onclick="openModal('modal-username')">Change Username</button>
+                    <button class="btn btn-secondary" onclick="openModal('modal-progress')">View Progress</button>
+                    <button class="btn btn-secondary" style="border-color:var(--danger); color:var(--danger);" onclick="openModal('modal-delete')">Delete Account</button>
                 </div>
             </div>
         </div>
